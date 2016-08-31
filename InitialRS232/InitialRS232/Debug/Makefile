@@ -37,7 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../InitialRS232.c
+../InitialRS232.c \
+../UART_driver.c
 
 
 PREPROCESSING_SRCS += 
@@ -47,16 +48,20 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-InitialRS232.o
+InitialRS232.o \
+UART_driver.o
 
 OBJS_AS_ARGS +=  \
-InitialRS232.o
+InitialRS232.o \
+UART_driver.o
 
 C_DEPS +=  \
-InitialRS232.d
+InitialRS232.d \
+UART_driver.d
 
 C_DEPS_AS_ARGS +=  \
-InitialRS232.d
+InitialRS232.d \
+UART_driver.d
 
 OUTPUT_FILE_PATH +=InitialRS232.elf
 
@@ -72,6 +77,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
