@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "InitialRS232", "InitialRS232\InitialRS232.cproj", "{B09EB1EC-9A1F-48A4-88C2-EB0976B35CC3}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "InitialRS232", "InitialRS232\InitialRS232.cproj", "{6E5C2C93-84B4-4183-8E64-E7C23B305010}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B09EB1EC-9A1F-48A4-88C2-EB0976B35CC3}.Debug|AVR.ActiveCfg = Debug|AVR
-		{B09EB1EC-9A1F-48A4-88C2-EB0976B35CC3}.Debug|AVR.Build.0 = Debug|AVR
-		{B09EB1EC-9A1F-48A4-88C2-EB0976B35CC3}.Release|AVR.ActiveCfg = Release|AVR
-		{B09EB1EC-9A1F-48A4-88C2-EB0976B35CC3}.Release|AVR.Build.0 = Release|AVR
+		{6E5C2C93-84B4-4183-8E64-E7C23B305010}.Debug|AVR.ActiveCfg = Debug|AVR
+		{6E5C2C93-84B4-4183-8E64-E7C23B305010}.Debug|AVR.Build.0 = Debug|AVR
+		{6E5C2C93-84B4-4183-8E64-E7C23B305010}.Release|AVR.ActiveCfg = Release|AVR
+		{6E5C2C93-84B4-4183-8E64-E7C23B305010}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

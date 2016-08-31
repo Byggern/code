@@ -1,0 +1,125 @@
+
+InitialRS232.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000b8  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .comment      00000030  00000000  00000000  0000010c  2**0
+                  CONTENTS, READONLY
+  2 .debug_aranges 00000020  00000000  00000000  0000013c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   0000010a  00000000  00000000  0000015c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 000000c2  00000000  00000000  00000266  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   00000145  00000000  00000000  00000328  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000024  00000000  00000000  00000470  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    0000016f  00000000  00000000  00000494  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_ranges 00000010  00000000  00000000  00000603  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 38 00 	jmp	0x70	; 0x70 <__ctors_end>
+   4:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+   8:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+   c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  10:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  14:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  18:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  1c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  20:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  24:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  28:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  2c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  30:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  34:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  38:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  3c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  40:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  44:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  48:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  4c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  50:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  54:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  58:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  5c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  60:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  64:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  68:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+  6c:	0c 94 42 00 	jmp	0x84	; 0x84 <__bad_interrupt>
+
+00000070 <__ctors_end>:
+  70:	11 24       	eor	r1, r1
+  72:	1f be       	out	0x3f, r1	; 63
+  74:	cf ef       	ldi	r28, 0xFF	; 255
+  76:	d4 e0       	ldi	r29, 0x04	; 4
+  78:	de bf       	out	0x3e, r29	; 62
+  7a:	cd bf       	out	0x3d, r28	; 61
+  7c:	0e 94 44 00 	call	0x88	; 0x88 <main>
+  80:	0c 94 5a 00 	jmp	0xb4	; 0xb4 <_exit>
+
+00000084 <__bad_interrupt>:
+  84:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000088 <main>:
+#define toggle_bit(reg, bit) (reg ^= (1 << bit))
+#define test_bit( reg, bit ) (reg & (1 << bit))
+
+int main(void)
+{
+	set_bit(DDRA,0);
+  88:	d0 9a       	sbi	0x1a, 0	; 26
+	set_bit(DDRA,1);
+  8a:	d1 9a       	sbi	0x1a, 1	; 26
+	set_bit(PORTA,0);
+  8c:	d8 9a       	sbi	0x1b, 0	; 27
+	clear_bit(PORTA,1);	
+  8e:	d9 98       	cbi	0x1b, 1	; 27
+    while(1)
+    {
+		_delay_ms(1000);
+		toggle_bit(PORTA,0);
+  90:	21 e0       	ldi	r18, 0x01	; 1
+		toggle_bit(PORTA,1);
+  92:	92 e0       	ldi	r25, 0x02	; 2
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  94:	3f e3       	ldi	r19, 0x3F	; 63
+  96:	4d e0       	ldi	r20, 0x0D	; 13
+  98:	83 e0       	ldi	r24, 0x03	; 3
+  9a:	31 50       	subi	r19, 0x01	; 1
+  9c:	40 40       	sbci	r20, 0x00	; 0
+  9e:	80 40       	sbci	r24, 0x00	; 0
+  a0:	e1 f7       	brne	.-8      	; 0x9a <main+0x12>
+  a2:	00 c0       	rjmp	.+0      	; 0xa4 <main+0x1c>
+  a4:	00 00       	nop
+	set_bit(PORTA,0);
+	clear_bit(PORTA,1);	
+    while(1)
+    {
+		_delay_ms(1000);
+		toggle_bit(PORTA,0);
+  a6:	8b b3       	in	r24, 0x1b	; 27
+  a8:	82 27       	eor	r24, r18
+  aa:	8b bb       	out	0x1b, r24	; 27
+		toggle_bit(PORTA,1);
+  ac:	8b b3       	in	r24, 0x1b	; 27
+  ae:	89 27       	eor	r24, r25
+  b0:	8b bb       	out	0x1b, r24	; 27
+  b2:	f0 cf       	rjmp	.-32     	; 0x94 <main+0xc>
+
+000000b4 <_exit>:
+  b4:	f8 94       	cli
+
+000000b6 <__stop_program>:
+  b6:	ff cf       	rjmp	.-2      	; 0xb6 <__stop_program>
