@@ -1,40 +1,49 @@
-/*
- * InitialRS232.c
- *
- * Created: 31.08.2016 11:53:37
- *  Author: magho
- */ 
-
-
 #include <avr/io.h>
 #include <string.h>
-#include "UART_driver.h"
-#define F_CPU 4912000UL
-#define UART0_BAUDRATE 1200
-/* default output is to COM1. */
 
+#define F_CPU 4912000UL
 #include <util/delay.h>
 
-#define set_bit( reg, bit ) (reg |= (1 << bit))
-#define clear_bit( reg, bit ) (reg &= ~(1 << bit))
-#define toggle_bit(reg, bit) (reg ^= (1 << bit))
-#define test_bit( reg, bit ) (reg & (1 << bit))
+#include "macros.h"
+#include "drivers/UART_driver.h"
+#include "drivers/SRAM_driver.h"
+#include "utils/SRAM_utils.h"
+
+
+#define UART0_BAUDRATE 9600
+/* default output is to COM1. */
+
 
 int main(void)
 {
 	UART0_init(F_CPU, UART0_BAUDRATE);
-	set_bit(DDRA,0);
-	set_bit(DDRA,1);
-	set_bit(PORTA,0);
-	clear_bit(PORTA,1);	
+	SRAM_init();
+	printf("Program Start");
+	set_bit(DDRB,2);
+	set_bit(PORTB,2);	
 	unsigned int inc = 1;
+	unsigned char * addr = 0;
     while(1)
     {
-		inc++;
+		SRAM_test();
+		/*
+		if (  addr == 0x1900 ) {
+			addr = (void*)0x1800;
+		}else{
+			//addr = (void *)( ((int)addr)*2);
+			addr++;
+		}
+		*addr += 1;
+		*/
+		//inc++;
+		//printf("%c",*addr);
+		//_delay_us(100);
+		//SRAM_test();
+		/*
 		printf("%d", inc);
 		printf(" stuff\n");
 		_delay_ms(500);
-		toggle_bit(PORTA,0);
-		toggle_bit(PORTA,1);
+		*/
+		toggle_bit(PORTB,2);
     }
 }
