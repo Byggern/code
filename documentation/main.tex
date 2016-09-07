@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\title{ByggernDok}
+\author{torjehoa }
+\date{September 2016}
+
+\begin{document}
+
+\maketitle
+
+\section{SRAM}
+
+The following table is from a bad chip select understanding. CE is the chip select. 
+
+
+\begin{table}[hb]
+\begin{tabular}{cccc|ccp{4cm}}
+\multicolumn{4}{c}{Inputs} &\multicolumn{2}{c}{Outputs}&\\
+MSB$_0$ & MSB$_1$ & Write & Read & Write & Read&\\\midrule
+1 & 0 & 0 & 0 & 0 & 0 &addressing without mode\\ 
+1 & 0 & 0 & 1 & 0 & 1 &pass-through read\\
+1 & 0 & 1 & 0 & 1 & 0 &pass-through write\\
+1 & 0 & 1 & 1 & 0 & 0 &Should not happen\\
+\end{tabular}
+\caption{Addressing RAM: With 10 as the most dignificant bits we address RAM. When we have matching signals we pass through the read and write signals. }
+\end{table}
+
+\subsection{Chip enable}
+
+With the chip enable as an output from the GAL the table is simplified to the same size as the ADC. 
+
+\clearpage
+
+\section{OLED}
+We need two bits from the address to figure out if we are talking about the OLED, another bit is needed to find if we are talking about command or data. 
+\begin{table}[hb]
+\begin{tabular}{ccc|cc}
+\multicolumn{3}{c}{Inputs}&\multicolumn{2}{c}{Outputs}\\
+MSB$_0$&MSB$_1$&MSB$_2$&Command&Data\\\midrule
+0&0&0&1&0\\
+0&0&1&0&1\\
+\end{tabular}
+\caption{00 is the signature for addressing the OLED, a third bit is used to distinguish between command and data. }
+\end{table}
+
+\section{ADC}
+The table for the ADC is trivial, the first two bits select it and then we will read. 
+\begin{table}[hb]
+\begin{tabular}{cc|c}
+\multicolumn{2}{c}{Inputs} & Output\\
+MSB$_0$& MSB$_{1}$& ADC select\\\midrule
+0&1&1  \\
+\end{tabular}
+\caption{The ADC is selected by the sequence 01 and can then be read. }
+\end{table}
+\end{document}
+
