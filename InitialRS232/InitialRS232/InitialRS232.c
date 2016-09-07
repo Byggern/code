@@ -11,6 +11,7 @@
 #include "UART_driver.h"
 #define F_CPU 4912000UL
 #define UART0_BAUDRATE 1200
+/* default output is to COM1. */
 
 #include <util/delay.h>
 
@@ -26,10 +27,12 @@ int main(void)
 	set_bit(DDRA,1);
 	set_bit(PORTA,0);
 	clear_bit(PORTA,1);	
-	unsigned char msg[] = "heisann\n";
+	unsigned int inc = 1;
     while(1)
     {
-		printf("stuff\n");
+		inc++;
+		printf("%d", inc);
+		printf(" stuff\n");
 		_delay_ms(500);
 		toggle_bit(PORTA,0);
 		toggle_bit(PORTA,1);
