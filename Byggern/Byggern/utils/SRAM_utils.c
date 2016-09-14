@@ -6,9 +6,13 @@
 void SRAM_test(void)
 {
 	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
-	uint16_t ext_ram_size	= 0x800;
+	uint16_t ext_ram_size	= 0xFF;
 	uint16_t write_errors	= 0;
 	uint16_t retrieval_errors	= 0;
+	uint16_t upper_retrieval_errors	= 0;
+	uint16_t lower_retrieval_errors	= 0;
+	uint16_t upper_write_errors	= 0;
+	uint16_t lower_write_errors	= 0;
 	printf("Starting SRAM test...\n");
 	// rand() stores some internal state, so calling this function in a loop will
 	// yield different seeds each time (unless srand() is called before this	function)
@@ -22,6 +26,11 @@ void SRAM_test(void)
 		if (retreived_value != some_value) {
 			//printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n", i,	retreived_value, some_value);
 			write_errors++;
+			if (i < ext_ram_size/2) {
+				lower_write_errors++;
+			} else {
+				upper_write_errors++;
+			}
 		}
 	}
 	// Retrieval phase: Check that no values were changed during or after the write	phase
@@ -33,7 +42,12 @@ void SRAM_test(void)
 		if (retreived_value != some_value) {
 			//printf("Retrieval phase error: ext_ram[%4d] = %02X (should be %02X)\n",	i, retreived_value, some_value);
 			retrieval_errors++;
+			if (i < ext_ram_size/2) {
+				lower_retrieval_errors++;
+			} else {
+				upper_retrieval_errors++;
+			}
 		}
 	}
-	printf("SRAM test completed with\n%4d errors in write phase and\n%4d errors	in retrieval phase\n\n", write_errors, retrieval_errors);
+	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
 }
