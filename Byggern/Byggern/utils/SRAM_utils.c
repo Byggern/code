@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <avr/delay.h>
 
 #include "../drivers/SRAM_driver.h"
 
 void SRAM_test(void)
 {
 	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
-	uint16_t ext_ram_size	= 0xFF;
+	uint16_t ext_ram_size	= 0x800;
 	uint16_t write_errors	= 0;
 	uint16_t retrieval_errors	= 0;
 	uint16_t upper_retrieval_errors	= 0;
@@ -49,5 +50,32 @@ void SRAM_test(void)
 			}
 		}
 	}
-	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+	printf("SRAM test completed (%d bytes) with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n\n", ext_ram_size, write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+}
+
+
+void SRAM_hammer_test(){
+	
+		volatile uint8_t * ext_mem = (void*)(0x1800);
+		uint8_t val = 50;
+		uint16_t sleeps = 0;
+		*ext_mem = val;
+		_delay_ms(sleeps);
+		printf("%d\n", *ext_mem);
+		//*ext_mem = val;
+		_delay_ms(sleeps);
+		printf("%d\n", *ext_mem);
+		//*ext_mem = val;
+		_delay_ms(sleeps);
+		printf("%d\n", *ext_mem);
+		val=100;
+		*ext_mem = val;
+		_delay_ms(sleeps);
+		printf("%d\n", *ext_mem);
+		//*ext_mem = val;
+		_delay_ms(sleeps);
+		printf("%d\n", *ext_mem);
+		//*ext_mem = val;
+		_delay_ms(sleeps);
+		printf("%d\n", *ext_mem);
 }
