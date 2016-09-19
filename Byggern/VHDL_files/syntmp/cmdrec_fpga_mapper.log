@@ -1,0 +1,10 @@
+C:\ispLEVER_Classic2_0\synpbase\bin64\m_cpld.exe  -prodtype  synplify_pro  -encrypt  -pro  -rundir  F:\pongvhdl  -part ispGAL22LV10  -package LJ  -grade -4   -areadelay 0 -minc -RWCheckOnRam 1 -summaryfile F:\pongvhdl\synlog\report\address_decoder_fpga_mapper.xml -top_level_module  address_decoder  -multisrs  -oedif  F:\pongvhdl\address_decoder.edi  -freq 1.000  F:\pongvhdl\synwork\address_decoder_mult.srs  -devicelib  C:\ispLEVER_Classic2_0\synpbase\lib\cpld\lattice.v  -ologparam  F:\pongvhdl\syntmp\address_decoder.plg  -osyn  F:\pongvhdl\address_decoder.srm  -prjdir  f:\pongvhdl\  -prjname  address_decoder  -log  F:\pongvhdl\synlog\address_decoder_fpga_mapper.srr 
+rc:0 success:1
+F:\pongvhdl\address_decoder.edi|o|1474299864|6432
+F:\pongvhdl\synwork\address_decoder_mult.srs|i|1474299834|1947
+C:\ispLEVER_Classic2_0\synpbase\lib\cpld\lattice.v|i|1401260784|210986
+F:\pongvhdl\syntmp\address_decoder.plg|o|1474299864|0
+F:\pongvhdl\address_decoder.srm|o|1474299864|4186
+F:\pongvhdl\synlog\address_decoder_fpga_mapper.srr|o|1474299864|1066
+C:\ispLEVER_Classic2_0\synpbase\bin\m_cpld.exe|i|1399365684|7067648
+C:\ispLEVER_Classic2_0\synpbase\bin64\m_cpld.exe|i|1399368522|8049664

@@ -1,0 +1,7 @@
+C:\ispLEVER_Classic2_0\synpbase\bin64\c_vhdl.exe  -osyn  F:\pongvhdl\synwork\address_decoder_comp.srs  -top  address_decoder  -prodtype  synplify_pro  -nostructver -dfltencoding sequential -encrypt  -pro  -dmgen  F:\pongvhdl\dm  -lite -ui -fid2 -ram -sharing on -ll 2000 -autosm -ignore_undefined_lib  -lib work F:\pongvhdl\address_decoder.vhd -loga  F:\pongvhdl\address_decoder.srr 
+rc:0 success:1
+F:\pongvhdl\synwork\address_decoder_comp.srs|o|1474299832|1964
+F:\pongvhdl\address_decoder.vhd|i|1474299816|1034
+F:\pongvhdl\address_decoder.srr|o|1474299860|1508
+C:\ispLEVER_Classic2_0\synpbase\bin\c_vhdl.exe|i|1401223898|2046976
+C:\ispLEVER_Classic2_0\synpbase\bin64\c_vhdl.exe|i|1401224104|5533184
