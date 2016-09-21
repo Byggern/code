@@ -83,7 +83,11 @@ void SRAM_hammer_test(){
 
 
 const void * EXTMEM_start = 0x1800;
+<<<<<<< Updated upstream
 const void * EXTMEM_size = 0x0400;
+=======
+const void * EXTMEM_size = 0x2000;
+>>>>>>> Stashed changes
 static void * EXTMEM_next = EXTMEM_start;
 
 
