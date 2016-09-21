@@ -33,4 +33,8 @@ void HID_joystick_zero(JOY_AXIS axis);
 
 long mapToRange(long input, long input_min, long input_max, long output_min, long output_max);
 
+uint8_t HID_read_slider(TOUCH_DEVICE device);
+
+uint8_t HID_read_touch_button(TOUCH_DEVICE device);
+
 #endif /* HID_DRIVER_H_ */

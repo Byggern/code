@@ -33,16 +33,15 @@ int main(void)
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 
     while(1)
-    {
-		//SRAM_test();
-		int i;
-		uint8_t joystick_x;
-		uint8_t joystick_y;
-		joystick_x = HID_read_joystick(X_AXIS);
-		joystick_y = HID_read_joystick(Y_AXIS);
-		
-		printf("X: %3d Y: %3d \n", joystick_x, joystick_y);
-		
+	{
+
+		/* Print Joystick */
+		printf("X: %3d Y: %3d \n", HID_read_joystick(X_AXIS), HID_read_joystick(Y_AXIS));
+
+		/* Print Touch devices */
+		printf("Left slider: %d3 Right slider %d3 \n", HID_read_slider(LEFT_SLIDER), HID_read_slider(RIGHT_SLIDER));
+		printf("Left button: %d1 Right button %d1 \n", HID_read_touch_button(LEFT_BUTTON), HID_read_touch_button(RIGHT_BUTTON));
+
 		/* Wait and Toggle heartbeat LED */
 		_delay_ms(150);
 		toggle_bit(PORTB,2);
