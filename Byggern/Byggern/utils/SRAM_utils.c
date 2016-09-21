@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <avr/delay.h>
 
 #include "../drivers/EXTMEM_driver.h"
 
@@ -49,4 +50,20 @@ uint16_t SRAM_test(void)
 	}
 	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
 	return retrieval_errors+write_errors;
+}
+
+const void * EXTMEM_start = 0x1800;
+const void * EXTMEM_size = 0x0400;
+static void * EXTMEM_next = EXTMEM_start;
+
+
+void * SRAM_allocate(size_t size){
+	if (EXTMEM_next + size > EXTMEM_START+EXTMEM_size){
+		printf("Out of memory\r\n");
+		return NULL;
+	}else{
+		void * mem = EXTMEM_next;
+		EXTMEM_next +=size;
+		return mem;
+	}
 }
