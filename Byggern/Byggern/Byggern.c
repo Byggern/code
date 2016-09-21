@@ -17,10 +17,18 @@ int main(void)
 {
 	/* System inits */
 	UART0_init(F_CPU, UART0_BAUDRATE);
+	printf("\n\n- - - N o p e - - -\n\nInitializing serial port... [PASS]\n");
+	printf("Initializing external memory...");
 	EXTMEM_init();
+	printf(" [PASS]\n");
+	printf("Initializing ADC...");
 	ADC_init();
+	printf(" [PASS]\n");
+	printf("Calibrating joystick...\n");
 	HID_calibrate_joystick();
-	printf("Program Start");
+	printf("[PASS]");
+	printf("Program Start\n");
+
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 

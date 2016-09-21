@@ -1,19 +1,37 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include  "avr/io.h"
+#define F_CPU 4912000UL
+#include <util/delay.h>
 
 #include "HID_driver.h"
 #include "ADC_driver.h"
 
 JOY_CALIBRATE joystick_calibration_values;
 
+long mapToRange(long input, long input_min, long input_max, long output_min, long output_max) {
+	return (input - input_min)*(output_max - output_min)/(input_max - input_min) + output_min;
+}
+
 /* Joystick and Button Functions */
 uint8_t HID_read_joystick(JOY_AXIS axis) {
 	uint8_t adc_val = ADC_read_blocking(axis);
+	uint8_t current_joy_val;
 	if(axis == X_AXIS) {
-		return adc_val - joystick_calibration_values.x_offset;
+		current_joy_val = mapToRange(adc_val - joystick_calibration_values.x_offset, 0-joystick_calibration_values.x_offset, 255-joystick_calibration_values.x_offset, 0, 255);
+		if((current_joy_val > 127 + joystick_calibration_values.x_deadzone) | (current_joy_val < 127 - joystick_calibration_values.x_deadzone)) {
+			return current_joy_val;
+		} else {
+			return 127;
+		}
 	} else {
-		return adc_val - joystick_calibration_values.y_offset;
+		current_joy_val = mapToRange(adc_val - joystick_calibration_values.y_offset, 0-joystick_calibration_values.y_offset, 255-joystick_calibration_values.y_offset, 0, 255);
+		if((current_joy_val > 127 + joystick_calibration_values.y_deadzone) | (current_joy_val < 127 - joystick_calibration_values.y_deadzone)) {
+			return current_joy_val;
+		} else {
+			return 127;
+		}
 	}
 }
 
@@ -21,10 +39,13 @@ void HID_calibrate_joystick(void) {
 	joystick_calibration_values.x_axis_min = 0;
 	joystick_calibration_values.x_axis_max = 255;
 	joystick_calibration_values.x_offset = 0;
+	joystick_calibration_values.x_deadzone = 5;
 	
 	joystick_calibration_values.y_axis_min = 0;
 	joystick_calibration_values.y_axis_max = 255;
 	joystick_calibration_values.y_offset = 0;
+	joystick_calibration_values.y_deadzone = 5;
+	
 	
 	HID_joystick_zero(X_AXIS);
 	HID_joystick_zero(Y_AXIS);
@@ -33,15 +54,42 @@ void HID_calibrate_joystick(void) {
 void HID_joystick_zero(JOY_AXIS axis) {
 	uint16_t center_sum = 0;
 	int i;
-	for (i = 0; i < 100; i++) {
-		center_sum += ADC_read_blocking(axis);
+	uint8_t axis_max = 127;
+	uint8_t axis_min = 127;
+	uint8_t current_adc_val;
+	int8_t offset;
+	uint8_t deadzone;
+	
+	for (i = 0; i < 50; i++) {
+		current_adc_val = ADC_read_blocking(axis);
+		center_sum += current_adc_val;
+		if (current_adc_val > axis_max) {
+			axis_max = current_adc_val;
+		}
+		if (current_adc_val < axis_min) {
+			axis_min = current_adc_val;
+		}
+		_delay_ms(10);
 	}
-	if(axis == X_AXIS) {
-		joystick_calibration_values.x_offset = center_sum/100 - 127;
-		printf("offset: %d", joystick_calibration_values.x_offset);
+	
+	offset = center_sum/50 - 127;
+	
+	if (abs(axis_max-127) > abs(axis_min-127)) {
+		deadzone = abs(axis_max-127);
 	} else {
-		joystick_calibration_values.y_offset = center_sum/100 - 127;
-		printf("offset: %d", joystick_calibration_values.x_offset);
+		deadzone = abs(axis_min-127);
+	}
+	
+	if(axis == X_AXIS) {
+		joystick_calibration_values.x_offset = offset;
+		joystick_calibration_values.x_deadzone = deadzone;
+		printf("x offset: %d\n", joystick_calibration_values.x_offset);
+		printf("x deadzone: %d\n", joystick_calibration_values.x_deadzone);
+	} else {
+		joystick_calibration_values.y_offset = offset;
+		joystick_calibration_values.y_deadzone = deadzone;
+		printf("y offset: %d\n", joystick_calibration_values.y_offset);
+		printf("y deadzone: %d\n", joystick_calibration_values.y_deadzone);
 	}
 }
 
@@ -58,5 +106,5 @@ uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 		printf("read_touch_button called with invalid device");
 		return 0;
 	}
-	return 
+	return 0;
 }
