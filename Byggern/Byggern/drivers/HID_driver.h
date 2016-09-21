@@ -8,7 +8,7 @@ typedef enum {
 } JOY_AXIS;
 
 typedef enum {
-	LEFT_SLIDER = 2, // number correspons to adc channel 
+	LEFT_SLIDER = 2, // number corresponds to adc channel 
 	RIGHT_SLIDER,
 	LEFT_BUTTON,
 	RIGHT_BUTTON
@@ -29,7 +29,7 @@ uint8_t HID_read_joystick(JOY_AXIS axis);
 
 void HID_calibrate_joystick(void);
 
-void HID_joystick_zero(JOY_AXIS axis);
+uint8_t HID_joystick_zero(JOY_AXIS axis);
 
 long mapToRange(long input, long input_min, long input_max, long output_min, long output_max);
 

@@ -3,7 +3,7 @@
 
 #include "../drivers/EXTMEM_driver.h"
 
-void SRAM_test(void)
+uint16_t SRAM_test(void)
 {
 	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
 	uint16_t ext_ram_size	= 0x800;
@@ -47,5 +47,6 @@ void SRAM_test(void)
 			}
 		}
 	}
-	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+	return retrieval_errors+write_errors;
 }

@@ -36,6 +36,8 @@ uint8_t HID_read_joystick(JOY_AXIS axis) {
 }
 
 void HID_calibrate_joystick(void) {
+	printf("Calibrating joystick...\n");
+	
 	joystick_calibration_values.x_axis_min = 0;
 	joystick_calibration_values.x_axis_max = 255;
 	joystick_calibration_values.x_offset = 0;
@@ -46,12 +48,29 @@ void HID_calibrate_joystick(void) {
 	joystick_calibration_values.y_offset = 0;
 	joystick_calibration_values.y_deadzone = 5;
 	
+	uint16_t x_offset_deadzone_sum = HID_joystick_zero(X_AXIS);
+	uint16_t y_offset_deadzone_sum = HID_joystick_zero(Y_AXIS);
 	
-	HID_joystick_zero(X_AXIS);
-	HID_joystick_zero(Y_AXIS);
+	if (x_offset_deadzone_sum > 15) {
+		printf("X axis calibration failed! (Offset+deadzone out of bounds)\n");
+	} else {
+		/*printf("X axis calibrated.\n");*/
+	}
+	
+	if (y_offset_deadzone_sum > 15) {
+		printf("Y axis calibration failed! (Offset+deadzone out of bounds)\n");
+	} else {
+		/*printf("Y axis calibrated.\n");*/
+	}
+	
+	if (x_offset_deadzone_sum > 15 || y_offset_deadzone_sum > 15) {
+		printf("[!] Joystick calibration failed!\n");
+	} else {
+		printf("Joystick calibrated.\n");
+	}
 }
 
-void HID_joystick_zero(JOY_AXIS axis) {
+uint8_t HID_joystick_zero(JOY_AXIS axis) {
 	uint16_t center_sum = 0;
 	int i;
 	uint8_t axis_max = 127;
@@ -91,6 +110,7 @@ void HID_joystick_zero(JOY_AXIS axis) {
 		printf("y offset: %d\n", joystick_calibration_values.y_offset);
 		printf("y deadzone: %d\n", joystick_calibration_values.y_deadzone);
 	}
+	return abs(deadzone)+abs(offset);
 }
 
 uint8_t HID_read_slider(TOUCH_DEVICE device) {

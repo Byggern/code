@@ -1,3 +1,3 @@
 #pragma once
 
-void SRAM_test(void);
+uint16_t SRAM_test(void);

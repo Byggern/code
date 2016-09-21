@@ -17,25 +17,17 @@ int main(void)
 {
 	/* System inits */
 	UART0_init(F_CPU, UART0_BAUDRATE);
-	printf("\n\n- - - N o p e - - -\n\nInitializing serial port... [PASS]\n");
-	printf("Initializing external memory...");
+	printf("\n\n- - - N o p e - - -\n\nSerial port initialized. Hello, world!\n");
 	EXTMEM_init();
-	printf(" [PASS]\n");
-	printf("Initializing ADC...");
 	ADC_init();
-	printf(" [PASS]\n");
-	printf("Calibrating joystick...\n");
 	HID_calibrate_joystick();
-	printf("[PASS]");
-	printf("Program Start\n");
+	printf("\nProgram Start\n");
 
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 
     while(1)
     {
-		//SRAM_test();
-		int i;
 		uint8_t joystick_x;
 		uint8_t joystick_y;
 		joystick_x = HID_read_joystick(X_AXIS);

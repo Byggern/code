@@ -18,4 +18,6 @@ void ADC_start(ADC_CHANNEL channel);
 
 uint8_t ADC_read(ADC_CHANNEL channel);
 
+uint8_t ADC_test(void);
+
 #endif /* ADC_DRIVER_H_ */
