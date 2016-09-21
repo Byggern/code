@@ -25,9 +25,13 @@ int main(void)
     while(1)
     {
 		//SRAM_test();
+		int i;
+		uint8_t joystick_x;
+		uint8_t joystick_y;
+		joystick_x = ADC_read_blocking(CHANNEL_0);
+		joystick_y = ADC_read_blocking(CHANNEL_1);
 		
-		int8_t adc_read = ADC_read_blocking(CHANNEL_0);
-		printf("ADC_CH0 reads: %d \n", adc_read);
+		printf("X: %3d Y: %3d \n", joystick_x, joystick_y);
 		
 		/* Wait and Toggle heartbeat LED */
 		_delay_ms(150);
