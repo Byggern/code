@@ -11,12 +11,12 @@
 
 JOY_CALIBRATE joystick_calibration_values;
 
-long mapToRange(long input, long input_min, long input_max, long output_min, long output_max) {
+int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t output_min, int16_t output_max) {
 	return (input - input_min)*(output_max - output_min)/(input_max - input_min) + output_min;
 }
 
 /* Joystick and Button Functions */
-uint8_t HID_read_joystick(JOY_AXIS axis) {
+uint8_t HID_read_joystick_axis(JOY_AXIS axis) {
 	uint8_t adc_val = ADC_read_blocking(axis);
 	uint8_t current_joy_val;
 	if(axis == X_AXIS) {
@@ -65,7 +65,8 @@ void HID_calibrate_joystick(void) {
 	}
 	
 	if (x_offset_deadzone_sum > 15 || y_offset_deadzone_sum > 15) {
-		printf("[!] Joystick calibration failed!\n");
+		printf("[!] Joystick calibration failed! Retrying.\n");
+		HID_calibrate_joystick();
 	} else {
 		printf("Joystick calibrated.\n");
 	}
@@ -73,13 +74,13 @@ void HID_calibrate_joystick(void) {
 
 uint8_t HID_joystick_zero(JOY_AXIS axis) {
 	uint16_t center_sum = 0;
-	int i;
 	uint8_t axis_max = 127;
 	uint8_t axis_min = 127;
 	uint8_t current_adc_val;
 	int8_t offset;
 	uint8_t deadzone;
 	
+	int i;
 	for (i = 0; i < 50; i++) {
 		current_adc_val = ADC_read_blocking(axis);
 		center_sum += current_adc_val;
@@ -114,6 +115,35 @@ uint8_t HID_joystick_zero(JOY_AXIS axis) {
 	return abs(deadzone)+abs(offset);
 }
 
+JOY_VALS HID_read_joystick() {
+	JOY_VALS joystick_values;
+	joystick_values.x_axis = mapToRange(HID_read_joystick_axis(X_AXIS), 0, 255, -50, 51)*2;
+	joystick_values.y_axis = mapToRange(HID_read_joystick_axis(Y_AXIS), 0, 255, -50, 51)*2;
+	return joystick_values;
+}
+
+JOY_DIR HID_read_joystick_direction() {
+	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
+	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
+	if (x == 0 && y == 0) {
+		return CENTER;
+	} else {
+		if (abs(y) > abs(x)) {
+			if (y > 0) {
+				return UP;
+			} else {
+				return DOWN;
+			}
+		} else {
+			if (x > 0) {
+				return RIGHT;
+			} else {
+				return LEFT;
+			}
+		}
+	}
+}
+
 uint8_t HID_read_slider(TOUCH_DEVICE device) {
 	if (device != LEFT_SLIDER && device != RIGHT_SLIDER) {
 		printf("read_slider called with invalid device");
@@ -130,9 +160,18 @@ uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
     switch(device) {
         case LEFT_BUTTON:
             clear_bit(DDRB, PB3);
-            return (PINB & (1 << PB3));
+            if (PINB & (1 << PB3)) {
+				return 1;
+			} else {
+				return 0;
+			}
         case RIGHT_BUTTON:
             clear_bit(DDRB, PB4);
-            return (PINB & (1 << PB4));
+            if (PINB & (1 << PB4)){
+	            return 1;
+	        } else {
+	            return 0;
+            }
     }
+	return 0;
 }

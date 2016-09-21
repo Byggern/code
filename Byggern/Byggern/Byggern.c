@@ -6,7 +6,7 @@
 #include "macros.h"
 #include "drivers/UART_driver.h"
 #include "drivers/EXTMEM_driver.h"
-	#include "utils/SRAM_utils.h"
+#include "utils/SRAM_utils.h"
 #include "drivers/ADC_driver.h"
 #include "drivers/HID_driver.h"
 
@@ -17,26 +17,29 @@ int main(void)
 {
 	/* System inits */
 	UART0_init(F_CPU, UART0_BAUDRATE);
-	printf("\n\n- - - N o p e - - -\n\nSerial port initialized. Hello, world!\n");
+	printf("\n\n");
 	EXTMEM_init();
 	ADC_init();
 	HID_calibrate_joystick();
-	printf("\nProgram Start\n");
+	printf("\n");
 
-	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
-
+	
+	printf("X\tY\tLS\tRS\tLB\tRB\tDIR\tX\tY\n");
+	
+	const char* dirNames[] = {"L","R","U","D","C"};
+	
     while(1)
     {
 		/* Print Joystick */
-		printf("X: %3d Y: %3d \n", HID_read_joystick(X_AXIS), HID_read_joystick(Y_AXIS));
-
 		/* Print Touch devices */
-		printf("Left slider: %d3 Right slider %d3 \n", HID_read_slider(LEFT_SLIDER), HID_read_slider(RIGHT_SLIDER));
-		printf("Left button: %d1 Right button %d1 \n", HID_read_touch_button(LEFT_BUTTON), HID_read_touch_button(RIGHT_BUTTON));
+		printf("%3d\t%3d\t", HID_read_joystick_axis(X_AXIS), HID_read_joystick_axis(Y_AXIS));
+		printf("%3d\t%3d\t", HID_read_slider(LEFT_SLIDER), HID_read_slider(RIGHT_SLIDER));
+		printf("%1d\t%1d\t", HID_read_touch_button(LEFT_BUTTON), HID_read_touch_button(RIGHT_BUTTON));
+		printf("%s\t", dirNames[HID_read_joystick_direction()]);
+		JOY_VALS joystickState = HID_read_joystick();
+		printf("%4d\t%4d\r", joystickState.x_axis, joystickState.y_axis);
 
-		/* Wait and Toggle heartbeat LED */
-		_delay_ms(150);
 		toggle_bit(PORTB,2);
     }
 }
