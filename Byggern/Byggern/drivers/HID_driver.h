@@ -19,10 +19,14 @@ typedef struct {
 	uint8_t x_axis_min;
 	uint8_t y_axis_max;
 	uint8_t y_axis_min;
+	uint8_t x_offset;
+	uint8_t y_offset;
 } JOY_CALIBRATE;
 
 uint8_t HID_read_joystick(JOY_AXIS axis);
 
 void HID_calibrate_joystick(void);
+
+void HID_joystick_zero(JOY_AXIS axis);
 
 #endif /* HID_DRIVER_H_ */
