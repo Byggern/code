@@ -5,6 +5,7 @@
 #define F_CPU 4912000UL
 #include <util/delay.h>
 
+#include "../macros.h"
 #include "HID_driver.h"
 #include "ADC_driver.h"
 
@@ -126,5 +127,12 @@ uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 		printf("read_touch_button called with invalid device");
 		return 0;
 	}
-	return 0;
+    switch(device) {
+        case LEFT_BUTTON:
+            clear_bit(DDRB, PB3);
+            return (PINB & (1 << PB3));
+        case RIGHT_BUTTON:
+            clear_bit(DDRB, PB4);
+            return (PINB & (1 << PB4));
+    }
 }
