@@ -7,6 +7,13 @@ typedef enum {
 	Y_AXIS
 } JOY_AXIS;
 
+typedef enum {
+	LEFT_SLIDER = 3,
+	RIGHT_SLIDER,
+	LEFT_BUTTON,
+	RIGHT_BUTTON
+	} TOUCH_DEVICE;
+
 typedef struct {
 	uint8_t x_axis_max;
 	uint8_t x_axis_min;

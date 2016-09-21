@@ -21,6 +21,10 @@ void HID_calibrate_joystick(void) {
 	// TODO: Make this interactive, such that it asks the user to press a button while holding the joystick to each side
 }
 
-uint8_t HID_read_slider(SLIDER_BUTTON slider) {
-	
+uint8_t HID_read_touch(TOUCH_DEVICE device) {
+	switch(device) {
+		case LEFT_SLIDER:
+		
+	}
+		
 }

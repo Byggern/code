@@ -10,7 +10,6 @@ typedef enum {
 	CHANNEL_3
 	} ADC_CHANNEL;
 
-
 void ADC_init(void);
 
 uint8_t ADC_read_blocking(ADC_CHANNEL channel);
