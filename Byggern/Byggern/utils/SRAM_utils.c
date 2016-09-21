@@ -4,7 +4,7 @@
 
 #include "../drivers/SRAM_driver.h"
 
-void SRAM_test(void)
+uint16_t SRAM_test(void)
 {
 	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
 	uint16_t ext_ram_size	= 0x800;
@@ -50,12 +50,13 @@ void SRAM_test(void)
 			}
 		}
 	}
-	printf("SRAM test completed (%d bytes) with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n\n", ext_ram_size, write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+	return retrieval_errors+write_errors;
 }
 
 
 void SRAM_hammer_test(){
-	
+
 		volatile uint8_t * ext_mem = (void*)(0x1800);
 		uint8_t val = 50;
 		uint16_t sleeps = 0;
@@ -78,4 +79,21 @@ void SRAM_hammer_test(){
 		//*ext_mem = val;
 		_delay_ms(sleeps);
 		printf("%d\n", *ext_mem);
+}
+
+
+const void * EXTMEM_start = 0x1800;
+const void * EXTMEM_size = 0x0400;
+static void * EXTMEM_next = EXTMEM_start;
+
+
+void * SRAM_allocate(size_t size){
+	if (EXTMEM_next + size > EXTMEM_START+EXTMEM_size){
+		printf("Out of memory\r\n");
+		return NULL;
+	}else{
+		void * mem = EXTMEM_next;
+		EXTMEM_next +=size;
+		return mem;
+	}
 }

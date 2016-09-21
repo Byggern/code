@@ -1,4 +1,5 @@
 #pragma once
 
 
-void SRAM_test(void);
+uint16_t SRAM_test(void);
+void * SRAM_allocate(size_t size);
