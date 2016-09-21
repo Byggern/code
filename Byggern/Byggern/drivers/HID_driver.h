@@ -8,7 +8,7 @@ typedef enum {
 } JOY_AXIS;
 
 typedef enum {
-	LEFT_SLIDER = 3,
+	LEFT_SLIDER = 2, // number correspons to adc channel 
 	RIGHT_SLIDER,
 	LEFT_BUTTON,
 	RIGHT_BUTTON

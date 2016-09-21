@@ -3,6 +3,7 @@
 #include  "avr/io.h"
 
 #include "HID_driver.h"
+#include "ADC_driver.h"
 
 JOY_CALIBRATE joystick_calibration_values;
 
@@ -30,22 +31,32 @@ void HID_calibrate_joystick(void) {
 }
 
 void HID_joystick_zero(JOY_AXIS axis) {
-	uint8_t center_sum = 0;
+	uint16_t center_sum = 0;
 	int i;
-	for (i = 0; i < 10000; i++) {
+	for (i = 0; i < 100; i++) {
 		center_sum += ADC_read_blocking(axis);
 	}
 	if(axis == X_AXIS) {
-		joystick_calibration_values.x_offset = center_sum/10000 - 127;
+		joystick_calibration_values.x_offset = center_sum/100 - 127;
+		printf("offset: %d", joystick_calibration_values.x_offset);
 	} else {
-		joystick_calibration_values.y_offset = center_sum/10000 - 127;
+		joystick_calibration_values.y_offset = center_sum/100 - 127;
+		printf("offset: %d", joystick_calibration_values.x_offset);
 	}
 }
 
-uint8_t HID_read_touch(TOUCH_DEVICE device) {
-	switch(device) {
-		case LEFT_SLIDER:
-		
+uint8_t HID_read_slider(TOUCH_DEVICE device) {
+	if (device != LEFT_SLIDER && device != RIGHT_SLIDER) {
+		printf("read_slider called with invalid device");
+		return 0;
 	}
-		
+	return ADC_read_blocking(device);
+}
+
+uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
+	if (device != LEFT_BUTTON && device != RIGHT_BUTTON) {
+		printf("read_touch_button called with invalid device");
+		return 0;
+	}
+	return 
 }
