@@ -9,7 +9,7 @@
 #include "utils/SRAM_utils.h"
 #include "drivers/ADC_driver.h"
 #include "drivers/HID_driver.h"
-
+#include "drivers/OLED_driver.h"
 #define UART0_BAUDRATE 9600
 /* default output is to COM1. */
 
@@ -21,7 +21,9 @@ int main(void)
 	EXTMEM_init();
 	ADC_init();
 	HID_calibrate_joystick();
+	OLED_init();
 	printf("\n");
+
 
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 	
@@ -40,6 +42,16 @@ int main(void)
 		JOY_VALS joystickState = HID_read_joystick();
 		printf("%4d\t%4d\r", joystickState.x_axis, joystickState.y_axis);
 
+		for( int i = 0; i < 128; i++){
+			for ( int j = 0 ; j < 8 ; j++){
+				if ( i+j> 40){
+					OLED_vram[i+j*128] =255;
+				}else{
+					OLED_vram[i+j*128] =0 ;
+				}
+			}
+		}
+		OLED_draw();
 		toggle_bit(PORTB,2);
     }
 }

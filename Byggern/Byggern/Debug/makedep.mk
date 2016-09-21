@@ -4,7 +4,13 @@
 
 Byggern.c
 
-drivers\SRAM_driver.c
+drivers\ADC_driver.c
+
+drivers\HID_driver.c
+
+drivers\EXTMEM_driver.c
+
+drivers\OLED_driver.c
 
 drivers\UART_driver.c
 

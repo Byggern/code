@@ -1,26 +1,30 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <avr/pgmspace.h>
 #include "../macros.h"
 #include "avr/io.h"
 #include "OLED_driver.h"
+#include "../utils/SRAM_utils.h"
 
-volatile uint8_t * OLED_command_address = 0x1000;
-volatile uint8_t * OLED_data_address = 0x1200;
+
+volatile uint8_t * OLED_command_address = (uint8_t*)0x1000;
+volatile uint8_t * OLED_data_address = (uint8_t*)0x1200;
 
 void OLED_command( uint8_t command){
-  OLED_command_address=command;
+  *OLED_command_address=command;
 }
 
+const unsigned char re_init_error[] PROGMEM = "you already have initialized OLED!\n";
 
-#include "../SRAM_utils.h"
-static void * OLED_vram=NULL;
+uint8_t * OLED_vram=NULL;
 void OLED_init() {
   OLED_reset();
+  
   if ( !OLED_vram){
     OLED_vram = SRAM_allocate(1024);
   }else{
-    printf("you already have initialized OLED!\r\n");
+    //printf("%s", pgm_read( re_init_error));
   }
 }
 
@@ -40,7 +44,7 @@ void OLED_reset(){
     OLED_command(0xd9);//set pre-charge period
     OLED_command(0x21);
     OLED_command(0x20);//Set Memory Addressing Mode
-    OLED_command(0x02);
+    OLED_command(0x00);//MEMadressing horizontal
     OLED_command(0xdb);//VCOM deselect level mode
     OLED_command(0x30);
     OLED_command(0xad);//master configuration
@@ -50,11 +54,11 @@ void OLED_reset(){
     OLED_command(0xaf);// display on
 }
 
-void OLED_redraw(){
+void OLED_draw(){
   for ( int i = 0 ; i < 512;i++){
-    OLED_data_address[i] = OLED_vram[i];
+    OLED_data_address[i] = OLED_vram[i]%256;
   }
   for ( int i = 0 ; i < 512;i++){
-    OLED_data_address[i] = OLED_vram[i+512];
+    OLED_data_address[i] = OLED_vram[i+512]%256;
   }
 }

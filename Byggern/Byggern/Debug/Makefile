@@ -40,7 +40,10 @@ SUBDIRS :=  \
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../Byggern.c \
-../drivers/SRAM_driver.c \
+../drivers/ADC_driver.c \
+../drivers/HID_driver.c \
+../drivers/EXTMEM_driver.c \
+../drivers/OLED_driver.c \
 ../drivers/UART_driver.c \
 ../utils/SRAM_utils.c
 
@@ -53,25 +56,37 @@ ASM_SRCS +=
 
 OBJS +=  \
 Byggern.o \
-drivers/SRAM_driver.o \
+drivers/ADC_driver.o \
+drivers/HID_driver.o \
+drivers/EXTMEM_driver.o \
+drivers/OLED_driver.o \
 drivers/UART_driver.o \
 utils/SRAM_utils.o
 
 OBJS_AS_ARGS +=  \
 Byggern.o \
-drivers/SRAM_driver.o \
+drivers/ADC_driver.o \
+drivers/HID_driver.o \
+drivers/EXTMEM_driver.o \
+drivers/OLED_driver.o \
 drivers/UART_driver.o \
 utils/SRAM_utils.o
 
 C_DEPS +=  \
 Byggern.d \
-drivers/SRAM_driver.d \
+drivers/ADC_driver.d \
+drivers/HID_driver.d \
+drivers/EXTMEM_driver.d \
+drivers/OLED_driver.d \
 drivers/UART_driver.d \
 utils/SRAM_utils.d
 
 C_DEPS_AS_ARGS +=  \
 Byggern.d \
-drivers/SRAM_driver.d \
+drivers/ADC_driver.d \
+drivers/HID_driver.d \
+drivers/EXTMEM_driver.d \
+drivers/OLED_driver.d \
 drivers/UART_driver.d \
 utils/SRAM_utils.d
 
@@ -89,6 +104,12 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
+
+
 
 
 

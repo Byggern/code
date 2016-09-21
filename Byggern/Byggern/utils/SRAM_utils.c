@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <avr/delay.h>
+#define F_CPU 4912000UL
+#include <util/delay.h>
 
 #include "../drivers/EXTMEM_driver.h"
 
@@ -52,14 +53,14 @@ uint16_t SRAM_test(void)
 	return retrieval_errors+write_errors;
 }
 
-const void * EXTMEM_start = 0x1800;
-const void * EXTMEM_size = 0x0400;
-static void * EXTMEM_next = EXTMEM_start;
+const void * EXTMEM_start = (const void*)0x1800;
+size_t EXTMEM_size = 0x0400;
+static void * EXTMEM_next = (void*)0x1800;
 
 
 void * SRAM_allocate(size_t size){
-	if (EXTMEM_next + size > EXTMEM_START+EXTMEM_size){
-		printf("Out of memory\r\n");
+	if (EXTMEM_next + size > EXTMEM_start + EXTMEM_size){
+		//printf("Out of memory\r\n");
 		return NULL;
 	}else{
 		void * mem = EXTMEM_next;
