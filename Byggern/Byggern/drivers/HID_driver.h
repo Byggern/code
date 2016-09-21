@@ -20,4 +20,6 @@ uint8_t HID_read_joystick(JOY_AXIS axis);
 
 void HID_calibrate_joystick(void);
 
+void HID_joystick_zero(JOY_AXIS axis);
+
 #endif /* HID_DRIVER_H_ */
