@@ -24,33 +24,18 @@ int main(void)
 	OLED_init();
 	printf("\n");
 
-
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 	
-	printf("X\tY\tLS\tRS\tLB\tRB\tDIR\tX\tY\n");
+		
+	OLED_clear_screen();
+	OLED_set_cursor(7,120);
+	OLED_write_string("Hello, world!");
 	
-	const char* dirNames[] = {"L","R","U","D","C"};
-	
+	OLED_draw();
     while(1)
     {
-		/* Print Joystick */
-		/* Print Touch devices */
-		printf("%3d\t%3d\t", HID_read_joystick_axis(X_AXIS), HID_read_joystick_axis(Y_AXIS));
-		printf("%3d\t%3d\t", HID_read_slider(LEFT_SLIDER), HID_read_slider(RIGHT_SLIDER));
-		printf("%1d\t%1d\t", HID_read_touch_button(LEFT_BUTTON), HID_read_touch_button(RIGHT_BUTTON));
-		printf("%s\t", dirNames[HID_read_joystick_direction()]);
-		JOY_VALS joystickState = HID_read_joystick();
-		printf("%4d\t%4d\r", joystickState.x_axis, joystickState.y_axis);
-
-		for( int i = 0; i < 128; i++){
-			for ( int j = 0 ; j < 8 ; j++){
-				if ( i+j> 40){
-					OLED_vram[i+j*128] =255;
-				}else{
-					OLED_vram[i+j*128] =0 ;
-				}
-			}
-		}
+		DEBUG_print_HID_values();
+		
 		OLED_draw();
 		toggle_bit(PORTB,2);
     }

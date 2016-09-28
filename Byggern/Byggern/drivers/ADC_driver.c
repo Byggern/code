@@ -39,9 +39,9 @@ uint8_t ADC_test(void) {
 		ADC_previous_value = ADC_current_value;
 	}
 	
-	printf("ADC running test sum: %d\n", ADC_test_sum);
+	//printf("ADC running test sum: %d\n", ADC_test_sum);
 
-	printf("Number of consequent equal values: %d\n", ADC_equal_last_sum);
+	//printf("Number of consequent equal values: %d\n", ADC_equal_last_sum);
 	
 	if (ADC_equal_last_sum > 95 || ADC_test_sum < 5) {
 		/* fail the test */

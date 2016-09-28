@@ -2,8 +2,11 @@
 #include <stdio.h>
 #define F_CPU 4912000UL
 #include <util/delay.h>
+#include <avr/pgmspace.h>
 
 #include "../drivers/EXTMEM_driver.h"
+
+const unsigned char sram_test[] PROGMEM = "SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n";
 
 uint16_t SRAM_test(void)
 {
@@ -49,7 +52,7 @@ uint16_t SRAM_test(void)
 			}
 		}
 	}
-	printf("SRAM test completed with\n %d errors in write phase (%d upper, %d lower) and\n %d errors in retrieval phase (%d upper, %d lower)\n", write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
+	printf_P(sram_test, write_errors, upper_write_errors, lower_write_errors, retrieval_errors, upper_retrieval_errors, lower_retrieval_errors);
 	return retrieval_errors+write_errors;
 }
 
