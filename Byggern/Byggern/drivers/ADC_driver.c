@@ -1,3 +1,6 @@
+#include "../utils/ERR-utils.h"
+char module[] = "ADC_driver";
+
 #include "ADC_driver.h"
 
 #include "avr/io.h"
@@ -13,12 +16,14 @@
 volatile uint8_t * adc_address = 0x1400;
 
 void ADC_init(void){
+	char function[] = "ADC_init";
+	
 	printf("Initializing ADC...\n");
 	clear_bit(DDRD,PD5); // Setup a pin to read interrupt line from ADC
 	if (ADC_test() == 1) {
 		printf("ADC initialized.\n");
 	} else {
-		printf("[!] ADC initialization failed!\n");
+		throwError(module, function, "Initialization failed!")
 	}
 }
 

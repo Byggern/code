@@ -1,3 +1,6 @@
+#include "../utils/ERR-utils.h"
+char module[] = "HID_driver";
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>

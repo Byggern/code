@@ -1,3 +1,6 @@
+#include "../utils/ERR-utils.h"
+char module[] = "OLED_driver";
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -11,25 +14,27 @@
 volatile uint8_t * OLED_command_address = (uint8_t*)0x1000;
 volatile uint8_t * OLED_data_address = (uint8_t*)0x1200;
 
-void OLED_command( uint8_t command){
-  *OLED_command_address=command;
+void OLED_command(uint8_t command){
+	*OLED_command_address = command;
 }
 
-const unsigned char re_init_error[] PROGMEM = "you already have initialized OLED!\n";
+const unsigned char re_init_error[] PROGMEM = "OLED already initialized.";
 
-uint8_t * OLED_vram=NULL;
+uint8_t * OLED_vram = NULL;
 void OLED_init() {
-  OLED_reset();
-  
-  if ( !OLED_vram){
-    OLED_vram = SRAM_allocate(1024);
-  }else{
-    //printf("%s", pgm_read( re_init_error));
-  }
+	char function[] = "OLED_init";
+	
+	OLED_reset();
+
+	if (!OLED_vram){
+		OLED_vram = SRAM_allocate(1024);
+	} else {
+		throwError(module, function, pgm_read(re_init_error));
+	}
 }
 
 void OLED_reset(){
-
+	
     OLED_command(0xae);//Turn off display
     OLED_command(0xa1);//Map Segment 0-128 in instead of 128-256
     OLED_command(0xda);//common pads hardware: alternative

@@ -1,1 +1,1 @@
-void throwError(const char* error);
+void throwError(const char* function, const char* error);
