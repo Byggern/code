@@ -145,6 +145,27 @@
     <Compile Include="macros.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="utils\DEBUG_utils.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\DEBUG_utils.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\ERR_utils.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\ERR_utils.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\FONTS_utils.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\MENU_utils.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\MENU_utils.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="utils\SRAM_utils.c">
       <SubType>compile</SubType>
     </Compile>

@@ -6,9 +6,11 @@
 #include "../drivers/HID_driver.h"
 #include "../drivers/OLED_driver.h"
 
-void DEBUG_print_HID_values(void) {
+void DEBUG_print_HID_values_header(void) {
 	printf("X\tY\tLS\tRS\tLB\tRB\tDIR\tX\tY\n");
-	
+}
+
+void DEBUG_print_HID_values(void) {
 	const char* dirNames[] = {"L","R","U","D","C"};
 	
 	printf("%3d\t%3d\t", HID_read_joystick_axis(X_AXIS), HID_read_joystick_axis(Y_AXIS));

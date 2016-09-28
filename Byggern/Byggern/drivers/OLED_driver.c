@@ -75,12 +75,23 @@ void OLED_draw(){
   
 }
 
+void OLED_write_string_P( char * pgmptr){
+	char current;
+	int i = 0;
+	while(current = pgm_read_byte(pgmptr+i)){
+		OLED_write_char(current);
+		i += sizeof(char);
+		OLED_cursor_increment(8);
+	}
+}
+
 void OLED_set_cursor(uint8_t page, uint8_t column) {
 	if ( (page <= 7) && (column <= 127)) {
 		OLED_page = page;
 		OLED_column = column;
 	}
 }
+
 void OLED_cursor_increment(uint16_t steps){
 	OLED_column+=steps;
 	OLED_page += OLED_column/128;

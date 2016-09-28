@@ -159,19 +159,28 @@ uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 	}
     switch(device) {
         case LEFT_BUTTON:
-            clear_bit(DDRB, PB3);
-            if (PINB & (1 << PB3)) {
+            clear_bit(DDRD, PD2);
+            if (PIND & (1 << PD2)) {
 				return 1;
 			} else {
 				return 0;
 			}
         case RIGHT_BUTTON:
-            clear_bit(DDRB, PB4);
-            if (PINB & (1 << PB4)){
+            clear_bit(DDRD, PD3);
+            if (PIND & (1 << PD3)){
 	            return 1;
 	        } else {
 	            return 0;
             }
     }
 	return 0;
+}
+
+uint8_t HID_read_joy_button(void) {
+	clear_bit(DDRE, PE0);
+	if (PINE & (1 << PE0)) {
+		return 1;
+	} else {
+		return 0;
+	}
 }

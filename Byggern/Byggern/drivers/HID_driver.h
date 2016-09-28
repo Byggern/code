@@ -50,6 +50,8 @@ JOY_VALS HID_read_joystick();
 
 JOY_DIR HID_read_joystick_direction();
 
+uint8_t HID_read_joy_button(void);
+
 uint8_t HID_read_slider(TOUCH_DEVICE device);
 
 uint8_t HID_read_touch_button(TOUCH_DEVICE device);
