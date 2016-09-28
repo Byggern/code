@@ -44,7 +44,13 @@ void OLED_reset(){
     OLED_command(0xd9);//set pre-charge period
     OLED_command(0x21);
     OLED_command(0x20);//Set Memory Addressing Mode
-    OLED_command(0x00);//MEMadressing horizontal
+    OLED_command(0x00);		//MEMadressing horizontal
+	OLED_command(0x21);//Set column address
+	OLED_command(0x00);		//Start address
+	OLED_command(0x7f);		//End address
+	OLED_command(0x22);//Set page address
+	OLED_command(0x00);		//Start address
+	OLED_command(0x07);		//End address
     OLED_command(0xdb);//VCOM deselect level mode
     OLED_command(0x30);
     OLED_command(0xad);//master configuration
@@ -55,10 +61,11 @@ void OLED_reset(){
 }
 
 void OLED_draw(){
-  for ( int i = 0 ; i < 512;i++){
-    OLED_data_address[i] = OLED_vram[i]%256;
+  for ( int i = 0 ; i < 256;i++){
+    *OLED_data_address = OLED_vram[i]%256;
   }
-  for ( int i = 0 ; i < 512;i++){
-    OLED_data_address[i] = OLED_vram[i+512]%256;
+  for ( int i = 0 ; i < 256;i++){
+    *OLED_data_address = OLED_vram[i+512]%256;
   }
+  
 }
