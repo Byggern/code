@@ -1,3 +1,9 @@
+#include <stdint.h>
+#include <stdbool.h>
+#include <avr/pgmspace.h>
+#define F_CPU 4912000UL
+#include <avr/delay.h>
+
 #include "../macros.h"
 #include "../drivers/UART_driver.h"
 #include "../drivers/EXTMEM_driver.h"
@@ -5,6 +11,16 @@
 #include "../drivers/ADC_driver.h"
 #include "../drivers/HID_driver.h"
 #include "../drivers/OLED_driver.h"
+
+const char hello_text[] PROGMEM = "Hello menu works!\0";
+
+void DEBUG_OLED_hello(void) {
+	OLED_clear_screen();
+	OLED_set_cursor(0,0);
+	OLED_write_string_P(hello_text);
+	OLED_draw();
+	_delay_ms(2000);
+}
 
 void DEBUG_print_HID_values_header(void) {
 	printf("X\tY\tLS\tRS\tLB\tRB\tDIR\tX\tY\n");

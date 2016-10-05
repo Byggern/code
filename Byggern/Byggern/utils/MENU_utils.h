@@ -6,10 +6,17 @@
 typedef struct Menu_t {
 	const char * header;
 	void (* function)(void);
-	//struct Menu_t * parent;
 	struct Menu_t *submenus[8];
 	uint8_t length;
-	//uint8_t position;
 } Menu;
+
+Menu menus[];
+
+void MENU_link_menus(void);
+
+void MENU_redraw( Menu * menu, uint8_t position);
+
+void MENU( Menu * menu);
+
 
 #endif /* MENU_UTILS_H_ */

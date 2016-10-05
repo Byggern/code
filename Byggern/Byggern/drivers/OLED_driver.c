@@ -75,10 +75,10 @@ void OLED_draw(){
   
 }
 
-void OLED_write_string_P( char * pgmptr){
+void OLED_write_string_P( const char * pgmptr){
 	char current;
 	int i = 0;
-	while(current = pgm_read_byte(pgmptr+i)){
+	while( (current = pgm_read_byte(pgmptr+i)) ){
 		OLED_write_char(current);
 		i += sizeof(char);
 		OLED_cursor_increment(8);

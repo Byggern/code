@@ -9,6 +9,8 @@
 #include "HID_driver.h"
 #include "ADC_driver.h"
 
+#define JOY_DIR_THRESH 60
+
 JOY_CALIBRATE joystick_calibration_values;
 
 int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t output_min, int16_t output_max) {
@@ -125,7 +127,7 @@ JOY_VALS HID_read_joystick() {
 JOY_DIR HID_read_joystick_direction() {
 	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
 	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
-	if (x == 0 && y == 0) {
+	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
 		return CENTER;
 	} else {
 		if (abs(y) > abs(x)) {

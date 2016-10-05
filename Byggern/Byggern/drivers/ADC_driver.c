@@ -10,7 +10,7 @@
 #define ADC_CONV_TIME 40
 
 // const uint8_t adc_conv_time = 60; TODO: remove if not used
-volatile uint8_t * adc_address = 0x1400;
+volatile uint8_t * adc_address = (uint8_t *)0x1400;
 
 void ADC_init(void){
 	printf("Initializing ADC...\n");
