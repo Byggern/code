@@ -9,14 +9,10 @@ void SPI_init(void) {
 	DDRB |= (1 << PB4) | (1 << PB5) | (1 << PB7);
 	/* Enable SPI, master, clock rate fck*/
 	SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0);
-
-	
 }
 
 void SPI_send(uint8_t byte) {
 
-	/* Clear Interrupt flag */
-	volatile uint8_t a = SPSR;
 	/* Write byte*/
 	SPDR = byte;
 	while(! (SPSR & (1 << SPIF)))

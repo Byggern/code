@@ -2,6 +2,7 @@
 #include <stdio.h>
 #define F_CPU 4912000UL
 #include <util/delay.h>
+#include <math.h>
 
 #include <avr/pgmspace.h>
 #include "../macros.h"
@@ -137,7 +138,7 @@ void OLED_write_pixel(uint8_t x, uint8_t y, uint8_t state){
 	}
 
 }
-void OLED_write_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint8_t state){
+void OLED_write_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
   OLED_write_line_state(x0,y0,x1,y1,1);
 }
 void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint8_t state){

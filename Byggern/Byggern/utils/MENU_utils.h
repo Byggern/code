@@ -3,7 +3,7 @@
 #ifndef MENU_UTILS_H_
 #define MENU_UTILS_H_
 
-#define MENU_COUNT 5
+#define MENU_COUNT 6
 
 typedef struct Menu_t {
 	const char * header;
@@ -19,6 +19,8 @@ void MENU_link_menus(void);
 void MENU_redraw( Menu * menu, uint8_t position);
 
 void MENU( Menu * menu);
+
+void MENU_init(void);
 
 
 #endif /* MENU_UTILS_H_ */

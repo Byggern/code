@@ -16,7 +16,7 @@ const char utilsmenu[] PROGMEM = "Utils\0";
 const char hellomenu[] PROGMEM = "HelloFunc\0";
 const char calibratemenu[] PROGMEM = "CalJoyFunc\0";
 const char debugmenu[] PROGMEM = "DebugOut\0";
-const char wipemenu[] PROGMEM = "Wipe screen\0"
+const char wipemenu[] PROGMEM = "Wipe screen\0";
 
 Menu menus[MENU_COUNT] = {
 	{.header = mainmenu,		.function = NULL,					.length=2},
@@ -24,7 +24,7 @@ Menu menus[MENU_COUNT] = {
 	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},
 	{.header = calibratemenu,	.function = HID_calibrate_joystick, .length=0},
 	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0},
-	{.header = wipemenu,    .function = OLED_lr_bar_clear. .length = 0}
+	{.header = wipemenu,		.function = OLED_lr_bar_clear,		.length=0}
 };
 
 

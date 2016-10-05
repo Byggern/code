@@ -178,6 +178,12 @@
     <Compile Include="utils\MENU_utils.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="utils\OLED_utils.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\OLED_utils.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="utils\SRAM_utils.c">
       <SubType>compile</SubType>
     </Compile>

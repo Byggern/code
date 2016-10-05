@@ -38,9 +38,8 @@ int main(void)
 	
     while(1)
     {
-
-		printf("MCP REG: %hu \n", MCP_read(0x0c));
-		
+		MCP_reset();
+		printf("Status val: %d\n", MCP_read_status());
 		_delay_us(50);
 		/* Heart beat */
 		toggle_bit(PORTB,2);

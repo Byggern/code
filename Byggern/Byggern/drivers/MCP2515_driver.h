@@ -7,13 +7,13 @@
 
 uint8_t MCP_read(uint8_t address);
 
-void MCP_write(uint8_t byte);
+void MCP_write(uint8_t address, uint8_t byte);
 
-void MCP_request_to_send(void);
+void MCP_request_to_send(uint8_t buffer);
 
-void MCP_read_status(void);
+uint8_t MCP_read_status(void);
 
-void MCP_bit_modify(uint8_t bit);
+void MCP_bit_modify(uint8_t reg, uint8_t bit, uint8_t val);
 
 void MCP_reset(void);
 
