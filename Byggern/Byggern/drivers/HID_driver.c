@@ -9,7 +9,7 @@
 #include "HID_driver.h"
 #include "ADC_driver.h"
 
-#define JOY_DIR_THRESH 60
+#define JOY_DIR_THRESH 30
 
 JOY_CALIBRATE joystick_calibration_values;
 

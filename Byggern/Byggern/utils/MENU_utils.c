@@ -14,12 +14,14 @@ const char mainmenu[] PROGMEM = "Main Menu\0";
 const char utilsmenu[] PROGMEM = "Utils\0";
 const char hellomenu[] PROGMEM = "HelloFunc\0";
 const char calibratemenu[] PROGMEM = "CalJoyFunc\0";
+const char debugmenu[] PROGMEM = "DebugOut\0";
 
-Menu menus[4] = {
+Menu menus[] = {
 	{.header = mainmenu,		.function = NULL,					.length=2},
-	{.header = utilsmenu,		.function = NULL,					.length=1},
-	{.header = hellomenu,		.function = DEBUG_OLED_hello,			.length=0},
-	{.header = calibratemenu ,	.function = HID_calibrate_joystick, .length=0}
+	{.header = utilsmenu,		.function = NULL,					.length=2},
+	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},
+	{.header = calibratemenu,	.function = HID_calibrate_joystick, .length=0},
+	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0}
 };
 
 
@@ -27,6 +29,7 @@ void MENU_link_menus(void) {
 	menus[0].submenus[0] = &menus[1];
 	menus[0].submenus[1] = &menus[2];
 	menus[1].submenus[0] = &menus[3];
+	menus[1].submenus[1] = &menus[4];
 }
 
 void MENU_init(void){

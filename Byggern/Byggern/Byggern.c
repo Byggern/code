@@ -29,23 +29,14 @@ int main(void)
 	HID_calibrate_joystick();
 	OLED_init();
 	MENU_init();
-	printf("\n");
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
-	OLED_clear_screen();
-	OLED_draw();
-	DEBUG_print_HID_values_header();
 	
     while(1)
     {
-		
-		DEBUG_print_HID_values();
 		OLED_draw();
-		
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		MENU(menus);
-
-		
     }
 }

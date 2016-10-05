@@ -13,6 +13,7 @@
 #include "../drivers/OLED_driver.h"
 
 const char hello_text[] PROGMEM = "Hello menu works!\0";
+const char HID_debug_header[] PROGMEM = "X\tY\tLS\tRS\tLB\tRB\tDIR\tX\tY\n\0";
 
 void DEBUG_OLED_hello(void) {
 	OLED_clear_screen();
@@ -23,7 +24,7 @@ void DEBUG_OLED_hello(void) {
 }
 
 void DEBUG_print_HID_values_header(void) {
-	printf("X\tY\tLS\tRS\tLB\tRB\tDIR\tX\tY\n");
+	printf_P(HID_debug_header);
 }
 
 void DEBUG_print_HID_values(void) {
@@ -35,4 +36,12 @@ void DEBUG_print_HID_values(void) {
 	printf("%s\t", dirNames[HID_read_joystick_direction()]);
 	JOY_VALS joystickState = HID_read_joystick();
 	printf("%4d\t%4d\r", joystickState.x_axis, joystickState.y_axis);
+}
+
+void DEBUG_run_HID_debug() {
+	printf("\n\n");
+	DEBUG_print_HID_values_header();
+	for (int i = 0; i < 1000; i++) {
+		DEBUG_print_HID_values();
+	}
 }

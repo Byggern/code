@@ -14,5 +14,6 @@ void OLED_clear_screen(void);
 void OLED_write_string(const char* string);
 void OLED_write_string_P(const char * pgmptr);
 void OLED_cursor_increment(uint16_t steps);
+void OLED_write_pixel(uint8_t x, uint8_t y);
 
 #endif /* OLED_DRIVER_H_ */

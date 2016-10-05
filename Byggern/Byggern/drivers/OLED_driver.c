@@ -121,3 +121,29 @@ void OLED_write_string(const char* string) {
 		i++;
 	}
 }
+
+void OLED_write_pixel(uint8_t x, uint8_t y){
+	if ( (x > 127) || (y > 63) ){
+		return;
+	}
+	uint8_t page = y / 8;
+	uint8_t bit_pos = y % 8;
+	uint8_t byte = (1 << bit_pos);
+	OLED_set_cursor(page, x);
+	OLED_vram[OLED_column + (128 * OLED_page)] = byte;
+}
+/*
+void OLED_write_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+	int delta_x = x1 - x0;
+	int delta_y = y1 - y0;
+	int delta_y = abs(delta_x / delta_y);
+	int inv_slope = abs( delta_x / delta_y);
+	
+	
+	
+	for ( int rely  = 0 ; rely < y1; rely++){	
+		for (int relx = 0 ; relx < inv_slope; relx++){
+			OLED_write_pixel(x0+relx,)
+		}
+	}
+}*/
