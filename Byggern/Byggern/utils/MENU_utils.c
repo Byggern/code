@@ -6,6 +6,7 @@
 #include "MENU_utils.h"
 #include "../drivers/HID_driver.h"
 #include "../drivers/OLED_driver.h"
+#include "../utils/OLED_utils.h"
 #include "DEBUG_utils.h"
 
 
@@ -15,13 +16,15 @@ const char utilsmenu[] PROGMEM = "Utils\0";
 const char hellomenu[] PROGMEM = "HelloFunc\0";
 const char calibratemenu[] PROGMEM = "CalJoyFunc\0";
 const char debugmenu[] PROGMEM = "DebugOut\0";
+const char wipemenu[] PROGMEM = "Wipe screen\0"
 
 Menu menus[MENU_COUNT] = {
 	{.header = mainmenu,		.function = NULL,					.length=2},
-	{.header = utilsmenu,		.function = NULL,					.length=2},
+	{.header = utilsmenu,		.function = NULL,					.length=3},
 	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},
 	{.header = calibratemenu,	.function = HID_calibrate_joystick, .length=0},
-	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0}
+	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0},
+	{.header = wipemenu,    .function = OLED_lr_bar_clear. .length = 0}
 };
 
 
@@ -30,6 +33,7 @@ void MENU_link_menus(void) {
 	menus[0].submenus[1] = &menus[2];
 	menus[1].submenus[0] = &menus[3];
 	menus[1].submenus[1] = &menus[4];
+	menus[1].submenus[2] = &menus[5];
 }
 
 void MENU_init(void){
@@ -64,19 +68,19 @@ void MENU( Menu * menu){
 	} else if (menu->submenus) {
 		MENU_redraw(menu, position);
 		bool not_finished = true;
-		
+
 		/* Button state vars */
 		JOY_DIR prev_direction = HID_read_joystick_direction();
 		JOY_DIR curr_direction = prev_direction;
 		uint8_t prev_button = HID_read_touch_button(LEFT_BUTTON);
 		uint8_t curr_button = prev_button;
-		
+
 		while (not_finished) {
 			curr_button = HID_read_touch_button(LEFT_BUTTON);
-			
+
 			if (curr_button != prev_button) {
 				prev_button = curr_button;
-				
+
 				if(curr_button) {
 					if (position == 0) {
 						/* header clicked */
