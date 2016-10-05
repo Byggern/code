@@ -16,7 +16,7 @@ const char hellomenu[] PROGMEM = "HelloFunc\0";
 const char calibratemenu[] PROGMEM = "CalJoyFunc\0";
 const char debugmenu[] PROGMEM = "DebugOut\0";
 
-Menu menus[] = {
+Menu menus[MENU_COUNT] = {
 	{.header = mainmenu,		.function = NULL,					.length=2},
 	{.header = utilsmenu,		.function = NULL,					.length=2},
 	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},

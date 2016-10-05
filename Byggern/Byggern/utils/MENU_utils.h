@@ -3,6 +3,8 @@
 #ifndef MENU_UTILS_H_
 #define MENU_UTILS_H_
 
+#define MENU_COUNT 5
+
 typedef struct Menu_t {
 	const char * header;
 	void (* function)(void);
@@ -10,7 +12,7 @@ typedef struct Menu_t {
 	uint8_t length;
 } Menu;
 
-Menu menus[];
+Menu menus[MENU_COUNT];
 
 void MENU_link_menus(void);
 

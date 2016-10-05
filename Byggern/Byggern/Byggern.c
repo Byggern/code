@@ -13,6 +13,8 @@
 #include "drivers/OLED_driver.h"
 #include "utils/MENU_utils.h"
 #include "utils/DEBUG_utils.h"
+#include "drivers/SPI_driver.h"
+#include "drivers/MCP2515_driver.h"
 #define UART0_BAUDRATE 9600
 /* default output is to COM1. */
 
@@ -29,20 +31,22 @@ int main(void)
 	HID_calibrate_joystick();
 	OLED_init();
 	MENU_init();
+	SPI_init();
+	MCP_init();
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 	
     while(1)
     {
 
-		/*OLED_clear_screen();
-		OLED_write_pixel(20,0,1);
-		OLED_write_line(5,8,120,16);
-		OLED_write_line(0,0,115,8);
-		OLED_draw();*/
+		printf("MCP REG: %hu \n", MCP_read(0x0c));
+		
+		_delay_us(50);
 		/* Heart beat */
 		toggle_bit(PORTB,2);
-		MENU(menus);
+		//MENU(menus);
+		
+		
 		
     }
 }
