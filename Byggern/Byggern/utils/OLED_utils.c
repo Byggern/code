@@ -12,5 +12,6 @@ void OLED_lr_bar(uint8_t x){
 void OLED_lr_bar_clear(){
   for( int x= 1; x < 128;x++){
     OLED_lr_bar(x);
+    delay_ms(4);
   }
 }
