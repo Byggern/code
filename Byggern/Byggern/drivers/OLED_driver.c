@@ -122,7 +122,7 @@ void OLED_write_string(const char* string) {
 	}
 }
 
-void OLED_write_pixel(uint8_t x, uint8_t y){
+void OLED_write_pixel(uint8_t x, uint8_t y, uint8_t state){
 	if ( (x > 127) || (y > 63) ){
 		return;
 	}
@@ -130,7 +130,12 @@ void OLED_write_pixel(uint8_t x, uint8_t y){
 	uint8_t bit_pos = y % 8;
 	uint8_t byte = (1 << bit_pos);
 	OLED_set_cursor(page, x);
-	OLED_vram[OLED_column + (128 * OLED_page)] = byte;
+	if(state){
+		OLED_vram[OLED_column + (128 * OLED_page)] |= byte;
+	} else {
+		OLED_vram[OLED_column + (128 * OLED_page)] &= ~byte;
+	}
+	
 }
 
 void OLED_write_line(int x0, int y0, int x1, int y1){
@@ -150,14 +155,14 @@ void OLED_write_line(int x0, int y0, int x1, int y1){
     if ( gentleness >= 0){
       for ( int rely = 0 ; rely < deltay; rely++){
         for ( int relx = 0 ; relx < gentleness; relx++){
-          OLED_write_pixel(relx+(rely*gentleness), rely);
+          OLED_write_pixel(x0+relx+(rely*gentleness), y0+rely,1);
           //printf("%d,%d ", relx+(rely*gentleness), rely);
         }
       }
     }else{
       for ( int rely = 0 ; rely > deltay; rely--){
         for ( int relx = 0 ; relx < -gentleness; relx++){
-          OLED_write_pixel( relx+(rely*gentleness), rely);
+          OLED_write_pixel( x0+relx+(rely*gentleness), y0+rely,1);
           //printf("%d,%d ", relx+(rely*gentleness), rely);
         }
       }
@@ -168,14 +173,14 @@ void OLED_write_line(int x0, int y0, int x1, int y1){
     if ( gentleness >= 0){
       for ( int relx = 0 ; relx < deltax; relx++){
         for ( int rely = 0 ; rely < gentleness; rely++){
-          OLED_write_pixel(relx, rely+relx*gentleness);
+          OLED_write_pixel(x0+relx, y0+rely+relx*gentleness,1);
           //printf("%d,%d ", relx, rely+relx*gentleness);
         }
       }
     }else{
       for ( int relx = 0 ; relx < deltax; relx++){
         for ( int rely = 0 ; rely < -gentleness; rely++){
-          OLED_write_pixel( relx, -rely+relx*gentleness);
+          OLED_write_pixel( x0+relx, y0+-rely+relx*gentleness,1);
           //printf("%d,%d ", relx, -rely+relx*gentleness);
         }
       }

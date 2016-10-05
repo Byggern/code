@@ -34,9 +34,15 @@ int main(void)
 	
     while(1)
     {
-		OLED_draw();
+
+		/*OLED_clear_screen();
+		OLED_write_pixel(20,0,1);
+		OLED_write_line(5,8,120,16);
+		OLED_write_line(0,0,115,8);
+		OLED_draw();*/
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		MENU(menus);
+		
     }
 }
