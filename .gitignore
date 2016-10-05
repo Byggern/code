@@ -1,0 +1,15 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+*.map # Generated linker helper file
+*.hex # Generated hex files
+*.srec # Generated serial bootloader files
+*.atsuo # Solution user settings
+*.eep # Generated EEPROM file
+*.lss # Generated reduced source code
+*.mk # Generated makefile
+Makefile # Generated makefile
+

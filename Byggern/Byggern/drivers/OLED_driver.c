@@ -25,7 +25,7 @@ const unsigned char re_init_error[] PROGMEM = "you already have initialized OLED
 uint8_t * OLED_vram=NULL;
 void OLED_init() {
   OLED_reset();
-  
+
   if ( !OLED_vram){
     OLED_vram = SRAM_allocate(1024);
   }else{
@@ -72,7 +72,7 @@ void OLED_draw(){
   for ( int i = 0 ; i < 512;i++){
     *OLED_data_address = OLED_vram[i+512]%256;
   }
-  
+
 }
 
 void OLED_write_string_P( const char * pgmptr){
@@ -103,7 +103,7 @@ void OLED_write_char(uint8_t character) {
 	uint16_t bufferIndex = 0;
 	for (uint16_t col = 0; col < 8; col++) {
 		OLED_vram[col + OLED_column + (128 * OLED_page)] = pgm_read_byte(font[character - 32] + bufferIndex);
-		bufferIndex += sizeof(uint8_t);	
+		bufferIndex += sizeof(uint8_t);
 	}
 }
 
@@ -132,18 +132,54 @@ void OLED_write_pixel(uint8_t x, uint8_t y){
 	OLED_set_cursor(page, x);
 	OLED_vram[OLED_column + (128 * OLED_page)] = byte;
 }
-/*
-void OLED_write_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
-	int delta_x = x1 - x0;
-	int delta_y = y1 - y0;
-	int delta_y = abs(delta_x / delta_y);
-	int inv_slope = abs( delta_x / delta_y);
-	
-	
-	
-	for ( int rely  = 0 ; rely < y1; rely++){	
-		for (int relx = 0 ; relx < inv_slope; relx++){
-			OLED_write_pixel(x0+relx,)
-		}
-	}
-}*/
+
+void OLED_write_line(int x0, int y0, int x1, int y1){
+  if ( x0>x1){
+    int temp = x0;
+    x0 = x1;
+    x1 = temp;
+    temp = y0;
+    y0=y1;
+    y1=temp;
+  }
+
+  int deltax = x1-x0;
+  int deltay= y1-y0;
+  int gentleness = deltax/deltay;
+  if ( abs(gentleness)>=1){
+    if ( gentleness >= 0){
+      for ( int rely = 0 ; rely < deltay; rely++){
+        for ( int relx = 0 ; relx < gentleness; relx++){
+          OLED_write_pixel(relx+(rely*gentleness), rely);
+          //printf("%d,%d ", relx+(rely*gentleness), rely);
+        }
+      }
+    }else{
+      for ( int rely = 0 ; rely > deltay; rely--){
+        for ( int relx = 0 ; relx < -gentleness; relx++){
+          OLED_write_pixel( relx+(rely*gentleness), rely);
+          //printf("%d,%d ", relx+(rely*gentleness), rely);
+        }
+      }
+    }
+  }else{
+    //printf("gentleness: %d, ", gentleness);
+    gentleness = deltay/deltax;
+    if ( gentleness >= 0){
+      for ( int relx = 0 ; relx < deltax; relx++){
+        for ( int rely = 0 ; rely < gentleness; rely++){
+          OLED_write_pixel(relx, rely+relx*gentleness);
+          //printf("%d,%d ", relx, rely+relx*gentleness);
+        }
+      }
+    }else{
+      for ( int relx = 0 ; relx < deltax; relx++){
+        for ( int rely = 0 ; rely < -gentleness; rely++){
+          OLED_write_pixel( relx, -rely+relx*gentleness);
+          //printf("%d,%d ", relx, -rely+relx*gentleness);
+        }
+      }
+    }
+  }
+  //printf("\n");
+}
