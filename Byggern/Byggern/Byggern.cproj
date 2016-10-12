@@ -118,6 +118,12 @@
     <Compile Include="drivers\ADC_driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\CAN_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\CAN_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\HID_driver.c">
       <SubType>compile</SubType>
     </Compile>

@@ -5,6 +5,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#define CANINTE 0x2b
+
 #include "SPI_driver.h"
 
 uint8_t MCP_read(uint8_t address){
@@ -53,5 +55,12 @@ void MCP_reset(void){
 }
 
 void MCP_init(void){
+	SPI_init();
 	MCP_reset();
+	
+	//Set Can interrupt bit for receive
+	MCP_bit_modify( CANINTE, 0, 1);
+	MCP_bit_modify( CANINTE, 1, 1);
+	
+	//Set up interrupt handler for 162	
 }
