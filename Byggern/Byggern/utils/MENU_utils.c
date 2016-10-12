@@ -81,7 +81,7 @@ void MENU( Menu * menu){
 			if (curr_button != prev_button) {
 				prev_button = curr_button;
 
-				if(curr_button) {
+				if(curr_button || (curr_direction != prev_direction && curr_direction == RIGHT)) {
 					if (position == 0) {
 						/* header clicked */
 						not_finished = false;
@@ -97,13 +97,15 @@ void MENU( Menu * menu){
 					}
 				}
 			} else {
-				curr_direction = HID_read_joystick_direction();;
+				curr_direction = HID_read_joystick_direction();
 				if (prev_direction != curr_direction) {
 					prev_direction = curr_direction;
 					if (curr_direction == UP && (position > 0)) {
 						position--;
 					} else if (curr_direction == DOWN && (position < menu->length)) {
 						position++;
+					} else if (curr_direction == LEFT) {
+						not_finished = false;
 					}
 					if (curr_direction == UP || curr_direction == DOWN) {
 						MENU_redraw(menu, position);
