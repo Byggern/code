@@ -70,29 +70,94 @@ void MENU( Menu * menu){
 		bool not_finished = true;
 
 		/* Button state vars */
-		JOY_DIR prev_direction = HID_read_joystick_direction();
+		JOY_DIR prev_direction = HID_read_joystick_direction_change();
 		JOY_DIR curr_direction = prev_direction;
 		uint8_t prev_button = HID_read_touch_button(LEFT_BUTTON);
 		uint8_t curr_button = prev_button;
 
 		while (not_finished) {
 			curr_button = HID_read_touch_button(LEFT_BUTTON);
+			JOY_DIR curr_direction = HID_read_joystick_direction_change();
 
-			if (curr_button != prev_button) {
+			/*
+			if change:
+				switch button:
+					case right
+						enter menu;
+					case left
+						exit menu;
+					case down:
+						go down;
+					case up 
+						go up;
+			
+			*/
+			if ( curr_button && curr_button != prev_button){
+				/* draw star indicating 'busy' */
+				OLED_set_cursor(position,8);
+				OLED_write_char('*');
+				OLED_draw();
+				/* enter child menu */
+				MENU(menu->submenus[position - 1]);
+				/* redraw to remove star */
+				MENU_redraw(menu,position);
+				prev_button=curr_button;
+			}else if(!curr_button && curr_button != prev_button){
+				prev_button=curr_button;
+			}else if ( curr_direction != NOCHANGE ) {
+				switch(curr_direction){
+					case RIGHT:
+						if ( position==0){not_finished=true;}
+						else{
+							/* draw star indicating 'busy' */
+							OLED_set_cursor(position,8);
+							OLED_write_char('*');
+							OLED_draw();
+							/* enter child menu */
+							MENU(menu->submenus[position - 1]);
+							/* redraw to remove star */
+							MENU_redraw(menu,position);
+						}
+						break;
+					case LEFT:
+						not_finished = false;		
+					case DOWN:
+						if (position < menu->length) {
+							position++;
+							MENU_redraw(menu, position);
+						}
+						break;
+					case UP:
+						if (position-1 >= 0) {
+							position--;
+							MENU_redraw(menu, position);
+						}
+						break;
+					case CENTER:
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+			/*
+			if ((curr_button != prev_button) || ((curr_direction != prev_direction) && (curr_direction == RIGHT))) {
 				prev_button = curr_button;
+				prev_direction = curr_direction;
 
-				if(curr_button || (curr_direction != prev_direction && curr_direction == RIGHT)) {
+				if(curr_button || (curr_direction == RIGHT)) {
 					if (position == 0) {
-						/* header clicked */
+						// header clicked 
 						not_finished = false;
-					} else { /* menu clicked */
-						/* draw star indicating 'busy' */
+					} else { // menu clicked 
+						// draw star indicating 'busy' 
 						OLED_set_cursor(position,8);
 						OLED_write_char('*');
 						OLED_draw();
-						/* enter child menu */
+						// enter child menu 
 						MENU(menu->submenus[position - 1]);
-						/* redraw to remove star */
+						// redraw to remove star 
 						MENU_redraw(menu,position);
 					}
 				}
@@ -113,7 +178,7 @@ void MENU( Menu * menu){
 				}
 			}
 		}
-	}
+	}*/
 	// go to parent menu
 	return;
 }

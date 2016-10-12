@@ -43,7 +43,7 @@ int main(void)
 		_delay_us(50);
 		/* Heart beat */
 		toggle_bit(PORTB,2);
-		//MENU(menus);
+		MENU(menus);
 		
 		
 		

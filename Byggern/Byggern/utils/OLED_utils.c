@@ -1,6 +1,7 @@
 
 #define F_CPU 4912000UL
 #include <util/delay.h>
+#include <avr/pgmspace.h>
 #include "../drivers/OLED_driver.h"
 
 const char byggern[] PROGMEM = "BYGGERN\0";
