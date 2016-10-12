@@ -124,26 +124,38 @@ JOY_VALS HID_read_joystick() {
 	return joystick_values;
 }
 
+JOY_DIR prev_dir = CENTER;
+
 JOY_DIR HID_read_joystick_direction() {
+	JOY_DIR current_dir = CENTER;
 	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
 	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
 	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
-		return CENTER;
+		current_dir = CENTER;
 	} else {
 		if (abs(y) > abs(x)) {
 			if (y > 0) {
-				return UP;
+				current_dir = UP;
 			} else {
-				return DOWN;
+				current_dir = DOWN;
 			}
 		} else {
 			if (x > 0) {
-				return RIGHT;
+				current_dir = RIGHT;
 			} else {
-				return LEFT;
+				current_dir = LEFT;
 			}
 		}
 	}
+	if ((abs(x) > JOY_DIR_THRESH+10) || (abs(y) > JOY_DIR_THRESH+10)
+		&& !(current_dir == UP && prev_dir == DOWN)
+		&& !(current_dir == DOWN && prev_dir == UP)
+		&& !(current_dir == LEFT && prev_dir == RIGHT)
+		&& !(current_dir == RIGHT && prev_dir == LEFT)) {
+		return prev_dir;
+	}
+	prev_dir = current_dir;
+	return current_dir;
 }
 
 uint8_t HID_read_slider(TOUCH_DEVICE device) {
