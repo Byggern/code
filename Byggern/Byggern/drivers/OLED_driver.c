@@ -10,6 +10,7 @@
 #include "OLED_driver.h"
 #include "../utils/SRAM_utils.h"
 #include "../utils/FONTS_utils.h"
+#include "../utils/OLED_utils.h"
 
 volatile uint8_t * OLED_command_address = (uint8_t*)0x1000;
 volatile uint8_t * OLED_data_address = (uint8_t*)0x1200;
@@ -32,6 +33,7 @@ void OLED_init() {
   }else{
     //printf("%s", pgm_read( re_init_error));
   }
+  OLED_magic();
 }
 
 void OLED_reset(){
@@ -73,7 +75,6 @@ void OLED_draw(){
   for ( int i = 0 ; i < 512;i++){
     *OLED_data_address = OLED_vram[i+512]%256;
   }
-
 }
 
 void OLED_write_string_P( const char * pgmptr){
@@ -141,20 +142,20 @@ void OLED_write_pixel(uint8_t x, uint8_t y, uint8_t state){
 void OLED_write_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
   OLED_write_line_state(x0,y0,x1,y1,1);
 }
-void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint8_t state){
+void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t state){
   if ( x0>x1){
     int temp = x0;
     x0 = x1;
     x1 = temp;
     temp = y0;
-    y0=y1;
-    y1=temp;
+    y0 = y1;
+    y1 = temp;
   }
 
   int deltax = x1-x0;
-  int deltay= y1-y0;
+  int deltay = y1-y0;
   int gentleness = deltax/deltay;
-  if ( abs(gentleness)>=1){
+  if ( abs(gentleness) >= 1){
     if ( gentleness >= 0){
       for ( int rely = 0 ; rely < deltay; rely++){
         for ( int relx = 0 ; relx < gentleness; relx++){
@@ -162,7 +163,7 @@ void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint8_
           //printf("%d,%d ", relx+(rely*gentleness), rely);
         }
       }
-    }else{
+    } else {
       for ( int rely = 0 ; rely > deltay; rely--){
         for ( int relx = 0 ; relx < -gentleness; relx++){
           OLED_write_pixel( x0+relx+(rely*gentleness), y0+rely,state);
@@ -170,7 +171,7 @@ void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint8_
         }
       }
     }
-  }else{
+  } else {
     //printf("gentleness: %d, ", gentleness);
     gentleness = deltay/deltax;
     if ( gentleness >= 0){
@@ -180,7 +181,7 @@ void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint8_
           //printf("%d,%d ", relx, rely+relx*gentleness);
         }
       }
-    }else{
+    } else {
       for ( int relx = 0 ; relx < deltax; relx++){
         for ( int rely = 0 ; rely < -gentleness; rely++){
           OLED_write_pixel( x0+relx, y0+-rely+relx*gentleness,state);
