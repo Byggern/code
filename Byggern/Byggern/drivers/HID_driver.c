@@ -132,7 +132,7 @@ JOY_DIR HID_read_joystick_direction() {
 	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
 	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
 		current_dir = CENTER;
-	} else if ((abs(x) > JOY_DIR_THRESH+10) || (abs(y) > JOY_DIR_THRESH+10)) {
+	} else {
 		if (abs(y) > abs(x)) {
 			if (y > 0) {
 				current_dir = UP;
@@ -146,7 +146,12 @@ JOY_DIR HID_read_joystick_direction() {
 				current_dir = LEFT;
 			}
 		}
-	} else {
+	}
+	if ((abs(x) > JOY_DIR_THRESH+10) || (abs(y) > JOY_DIR_THRESH+10)
+		&& !(current_dir == UP && prev_dir == DOWN)
+		&& !(current_dir == DOWN && prev_dir == UP)
+		&& !(current_dir == LEFT && prev_dir == RIGHT)
+		&& !(current_dir == RIGHT && prev_dir == LEFT)) {
 		return prev_dir;
 	}
 	prev_dir = current_dir;
