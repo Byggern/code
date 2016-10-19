@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Byggern", "Byggern\Byggern.cproj", "{11E2E42C-5C1B-488A-8433-283501EC494E}"
 EndProject
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "Node2", "..\..\..\Documents\Arduino\Node2\Node2.cppproj", "{07B459B4-8D76-4638-BC6D-A459BA2D616B}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Node2", "Node2\Node2.cproj", "{F56ED6CE-D2D9-4A79-A4DD-0A191C7CAE77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,10 @@ Global
 		{11E2E42C-5C1B-488A-8433-283501EC494E}.Debug|AVR.Build.0 = Debug|AVR
 		{11E2E42C-5C1B-488A-8433-283501EC494E}.Release|AVR.ActiveCfg = Release|AVR
 		{11E2E42C-5C1B-488A-8433-283501EC494E}.Release|AVR.Build.0 = Release|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Debug|AVR.ActiveCfg = Debug|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Debug|AVR.Build.0 = Debug|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Release|AVR.ActiveCfg = Release|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Release|AVR.Build.0 = Release|AVR
+		{F56ED6CE-D2D9-4A79-A4DD-0A191C7CAE77}.Debug|AVR.ActiveCfg = Debug|AVR
+		{F56ED6CE-D2D9-4A79-A4DD-0A191C7CAE77}.Debug|AVR.Build.0 = Debug|AVR
+		{F56ED6CE-D2D9-4A79-A4DD-0A191C7CAE77}.Release|AVR.ActiveCfg = Release|AVR
+		{F56ED6CE-D2D9-4A79-A4DD-0A191C7CAE77}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

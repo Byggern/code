@@ -20,6 +20,7 @@
 /* default output is to COM1. */
 
 
+
 const char recvmsg[] PROGMEM = "Message received: %s\n";
 int main(void)
 {
@@ -51,7 +52,7 @@ int main(void)
 		_delay_ms(200);
 		/* Heart beat */
 		toggle_bit(PORTB,2);
-		//MENU(menus);
+		MENU(menus);
 	
 		CAN_send_message(0, 0, &loop_message);
 		if ( message_received){
