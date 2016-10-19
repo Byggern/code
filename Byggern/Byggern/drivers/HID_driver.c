@@ -124,26 +124,99 @@ JOY_VALS HID_read_joystick() {
 	return joystick_values;
 }
 
-JOY_DIR HID_read_joystick_direction() {
+JOY_DIR prev_dir = CENTER;
+
+JOY_DIR HID_read_joystick_direction(){
+	JOY_DIR current_dir = CENTER;
 	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
 	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
 	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
-		return CENTER;
-	} else {
+		current_dir = CENTER;
+		} else {
 		if (abs(y) > abs(x)) {
 			if (y > 0) {
-				return UP;
-			} else {
-				return DOWN;
+				current_dir = UP;
+				} else {
+				current_dir = DOWN;
 			}
-		} else {
-			if (x > 0) {
-				return RIGHT;
 			} else {
-				return LEFT;
+			if (x > 0) {
+				current_dir = RIGHT;
+				} else {
+				current_dir = LEFT;
 			}
 		}
 	}
+	return current_dir;
+}
+
+
+JOY_DIR HID_read_joystick_direction_change() {
+	
+	/*
+	curr = read_dir;
+	if prev == center:
+		if abs(curr.x) > utreshold || abs(curr.y) > utreshold:
+			prev = curr;
+			return curr;
+		else:
+			prev = prev;
+			return curr;
+	else:
+		if abs(y)<ltreshold && abs(x) < ltreshold:
+			return CENTER;
+		else:
+			return prev;
+	*/
+	int utreshold = 60;
+	int ltreshold = 10;
+	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
+	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
+	JOY_DIR current_dir = HID_read_joystick_direction();
+	if ( prev_dir == CENTER ) {
+		if (  abs(x) > utreshold || abs(y) > utreshold){
+			prev_dir=current_dir;
+			return current_dir;
+		} else{
+			return NOCHANGE;
+		}
+	}else{
+		if ( abs(x)< ltreshold && abs(y)< ltreshold ) {
+			prev_dir =CENTER;
+			return CENTER;
+		}else {
+			return NOCHANGE;
+		}
+	}
+	printf("failure!\n");
+	
+	
+	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
+		current_dir = CENTER;
+	} else {
+		if (abs(y) > abs(x)) {
+			if (y > 0) {
+				current_dir = UP;
+			} else {
+				current_dir = DOWN;
+			}
+		} else {
+			if (x > 0) {
+				current_dir = RIGHT;
+			} else {
+				current_dir = LEFT;
+			}
+		}
+	}
+	if ((abs(x) > JOY_DIR_THRESH+80) || (abs(y) > JOY_DIR_THRESH+80)
+		&& !(current_dir == UP && prev_dir == DOWN)
+		&& !(current_dir == DOWN && prev_dir == UP)
+		&& !(current_dir == LEFT && prev_dir == RIGHT)
+		&& !(current_dir == RIGHT && prev_dir == LEFT)) {
+		return prev_dir;
+	}
+	prev_dir = current_dir;
+	return current_dir;
 }
 
 uint8_t HID_read_slider(TOUCH_DEVICE device) {

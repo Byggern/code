@@ -35,7 +35,8 @@ typedef enum {
 	RIGHT,
 	UP,
 	DOWN,
-	CENTER
+	CENTER,
+	NOCHANGE //Torje: hacky stuff;
 } JOY_DIR;
 
 uint8_t HID_read_joystick_axis(JOY_AXIS axis);
@@ -47,6 +48,8 @@ uint8_t HID_joystick_zero(JOY_AXIS axis);
 int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t output_min, int16_t output_max);
 
 JOY_VALS HID_read_joystick();
+
+JOY_DIR HID_read_joystick_direction_change();
 
 JOY_DIR HID_read_joystick_direction();
 

@@ -53,7 +53,7 @@ int main(void)
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		MENU(menus);
-	
+
 		CAN_send_message(0, 0, &loop_message);
 		if ( message_received){
 			printf_P(recvmsg, CAN_receive_buf.data);
