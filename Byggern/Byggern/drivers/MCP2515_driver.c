@@ -62,5 +62,4 @@ void MCP_init(void){
 	MCP_bit_modify( CANINTE, 0, 1);
 	MCP_bit_modify( CANINTE, 1, 1);
 	
-	//Set up interrupt handler for 162	
 }

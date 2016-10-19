@@ -22,26 +22,39 @@ CAN_MESSAGE test_message = {
 	.data = &test_data
 };
 
-void CAN_init(void) {
+void CAN_init(uint8_t id)
+{
 	MCP_init();
 	
 	//enable interrupts
 	sei();
-	DDRE &= ~(1 << PE0);
+	
+	// Set interrupt pin as output
+	INTERRUPT_DIR_PORT &= ~(1 << INTERRUPT_PIN);
+	
+#if defined(__AVR_ATmega162__)
+	// Enable external interrupt on INT2
 	GICR |=  (1 << INT2);
+	// Interrupt on low signal
 	EMCUCR &= ~(1 << ISC2);
 	
-	//disable receive masks and filters on both receive buffers
+#elif defined (__AVR_ATmega2560__)
+	// Enable external interrupt on INT4 
+	EIMSK |= (1 << INT4);
+	// Interrupt on low signal
+	EICRB &= ~( (1 << ISC40) | (1 << ISC41));
+#endif
+
+	//Receive buffer operation mode 01 = receive only valid messages with standard identifiers
 	MCP_bit_modify(RXBnCTRL + RXB0_OFFSET,5,1);
 	MCP_bit_modify(RXBnCTRL + RXB0_OFFSET,6,1);
 	MCP_bit_modify(RXBnCTRL + RXB1_OFFSET,5,1);
 	MCP_bit_modify(RXBnCTRL + RXB1_OFFSET,6,1);
 	
-	//set identifier for receive buffers
-	MCP_write(RXBnSIDH + RXB0_OFFSET,0);
-	MCP_write(RXBnSIDL + RXB0_OFFSET,0);
-	MCP_write(RXBnSIDH + RXB1_OFFSET,0);
-	MCP_write(RXBnSIDL + RXB1_OFFSET,0);
+	MCP_write(RXBnSIDH + RXB0_OFFSET,(id >> 3));
+	MCP_write(RXBnSIDL + RXB0_OFFSET,(id << 5));
+	MCP_write(RXBnSIDH + RXB1_OFFSET,(id >> 3));
+	MCP_write(RXBnSIDL + RXB1_OFFSET,(id << 5));
 }
 
 void CAN_loopback_init(void)
@@ -77,7 +90,8 @@ void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
 	
 }
 
-
+// ATmega162
+#if defined(__AVR_ATmega162__)
 ISR(INT2_vect){
 	//printf("ISR\n");	
 	int lambda = (MCP_read(0xe) & 0b1110)>>1;
@@ -101,6 +115,31 @@ ISR(INT2_vect){
 	}
 	
 }
+#elif defined(__AVR_ATmega2560__)
+ISR(INT4_vect){
+	//printf("ISR\n");
+	int lambda = (MCP_read(0xe) & 0b1110)>>1;
+	//if first buffer
+	switch(lambda){
+		case RX0:
+		CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
+		MCP_bit_modify(CANINTF, 0, 0);
+		break;
+		case RX1:
+		CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
+		MCP_bit_modify(CANINTF, 1, 0);
+		break;
+		case ERROR:
+		printf_P(canerror);
+		MCP_bit_modify(CANINTF, 5, 0);
+		break;
+		default:
+		printf_P(canerror);
+		MCP_write(CANINTF, 0);
+	}
+}
+#endif
+
 
 
 void CAN_receive_message( uint8_t messageaddr, CAN_MESSAGE * message)
