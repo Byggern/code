@@ -2,7 +2,7 @@
 #define CAN_DRIVER_H_
 #include <stdbool.h>
 
-
+#define CANINTE 0x2b
 /* Set up pins corresponding to boards */
 #if defined(__AVR_ATmega162__)
 

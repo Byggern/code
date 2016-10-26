@@ -39,12 +39,16 @@ void CAN_init(uint8_t id)
 	EMCUCR &= ~(1 << ISC2);
 	
 #elif defined (__AVR_ATmega2560__)
-	// Enable external interrupt on INT4 
+	// Enable external interrupt on INT4
 	EIMSK |= (1 << INT4);
 	// Interrupt on low signal
 	EICRB &= ~( (1 << ISC40) | (1 << ISC41));
 #endif
-
+	
+	//Set Can interrupt bit for receive
+	MCP_bit_modify(CANINTE, 0, 1);
+	MCP_bit_modify(CANINTE, 1, 1);
+	
 	//Receive buffer operation mode 01 = receive only valid messages with standard identifiers
 	MCP_bit_modify(RXBnCTRL + RXB0_OFFSET,5,1);
 	MCP_bit_modify(RXBnCTRL + RXB0_OFFSET,6,1);
@@ -55,6 +59,8 @@ void CAN_init(uint8_t id)
 	MCP_write(RXBnSIDL + RXB0_OFFSET,(id << 5));
 	MCP_write(RXBnSIDH + RXB1_OFFSET,(id >> 3));
 	MCP_write(RXBnSIDL + RXB1_OFFSET,(id << 5));
+	
+	
 }
 
 void CAN_loopback_init(void)

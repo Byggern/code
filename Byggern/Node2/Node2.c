@@ -20,20 +20,25 @@ const char recvmsg[] PROGMEM = "Message received: %s\n";
 int main(void)
 {
 	// Heartbeat direction
-	//DDRB |= (1 << PB7);
+	DDRB |= (1 << PB7);
 	SPI_init();
+	//_delay_ms(2000);
+	
+	printf("YOLLO\n");
+	
 	CAN_init(1);
+	
 	UART0_init(F_CPU, UART0_BAUDRATE);
 	printf("communication up! \n");	
 	CAN_loopback_init();
 	CAN_MESSAGE loop_message = {
 		.id = 1,
-		.length = strlen(loop_string)+1,
+		.length = strlen(loop_string) + 1,
 		.data = loop_string
 	};
     while(1)
     {
-		//printf("Woho\n");
+		printf("Woho\n");
 		CAN_send_message(0, 0, &loop_message);
 		//SPI_send(0b00001111 );
 		if ( message_received){
@@ -41,12 +46,13 @@ int main(void)
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;
 		}
-		printf("CANCTRL: %x\n", MCP_read(CANCTRL));
+		//MCP_write(CANCNTRL,0b01000000)
+		//printf("CANCTRL: %x\n", MCP_read(CANCTRL));
 		
 		
 		// Heartbeat
-		//PORTB ^= (1 << PB7);
-		_delay_us(10);
+		PORTB ^= (1 << PB7);
+		//_delay_ms(200);
 	
         
     }

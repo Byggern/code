@@ -3,8 +3,10 @@
 #ifndef MCP2515_DRIVER_H_
 #define MCP2515_DRIVER_H_
 
+#define CANINTE 0x2b
 #define CANINTF 0x2c
 #define CANCTRL 0xf
+
 
 #define TXB0_OFFSET 0x00
 #define TXB1_OFFSET 0x10
