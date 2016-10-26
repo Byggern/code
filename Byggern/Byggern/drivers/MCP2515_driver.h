@@ -6,6 +6,10 @@
 #define CANINTE 0x2b
 #define CANINTF 0x2c
 #define CANCTRL 0xf
+#define CANSTAT 0xe
+#define EFLG 0x2d
+#define BFPCTRL 0x0c
+#define TXRTSCTRL 0x0d
 
 
 #define TXB0_OFFSET 0x00

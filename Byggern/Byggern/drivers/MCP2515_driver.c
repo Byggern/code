@@ -3,6 +3,15 @@
 
 #include <avr/io.h>
 
+#if defined(__AVR_ATmega162__)
+#define F_CPU 4912000UL
+
+#elif defined(__AVR_ATmega2560__)
+#define F_CPU 16000000L
+#endif
+
+#include <util/delay.h>
+
 #include "SPI_driver.h"
 #include "MCP2515_driver.h"
 
@@ -48,11 +57,14 @@ void MCP_bit_modify(uint8_t reg, uint8_t bit, uint8_t val) {
 }
 
 void MCP_reset(void){
+	SPI_slave_select();
 	SPI_send(0b11000000); // Reset instruction
+	SPI_slave_deselect();
 }
 
 void MCP_init(void){
 	SPI_init();
 	MCP_reset();
+	_delay_us(10);
 	
 }

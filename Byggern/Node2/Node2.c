@@ -12,47 +12,51 @@
 #include "../Byggern/drivers/UART_driver.h"
 #define UART0_BAUDRATE 9600
 
-const char loop_string[] = "hello,W";
+const char loop_string[] = "From 2";
 
 
 const char recvmsg[] PROGMEM = "Message received: %s\n";
 
 int main(void)
 {
+	
 	// Heartbeat direction
-	DDRB |= (1 << PB7);
-	SPI_init();
-	//_delay_ms(2000);
-	
-	printf("YOLLO\n");
-	
-	CAN_init(1);
-	
+	//DDRB |= (1 << );
 	UART0_init(F_CPU, UART0_BAUDRATE);
-	printf("communication up! \n");	
-	CAN_loopback_init();
+	_delay_ms(1000);
+	printf("\n Communication up! \n");
+	_delay_ms(500);
+	
+	CAN_init(0);
+	
+	printf("Status val: %x\n", MCP_read(CANSTAT));
+	//CAN_loopback_init();
+	printf("Status val: %x\n", MCP_read(CANSTAT));
+	
+	
 	CAN_MESSAGE loop_message = {
-		.id = 1,
+		.id = 0,
 		.length = strlen(loop_string) + 1,
 		.data = loop_string
 	};
     while(1)
     {
-		printf("Woho\n");
-		CAN_send_message(0, 0, &loop_message);
-		//SPI_send(0b00001111 );
+		
+		//printf("Woho\n");
+		//CAN_send_message(1, 0, &loop_message);
 		if ( message_received){
 			printf("--");
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;
 		}
-		//MCP_write(CANCNTRL,0b01000000)
-		//printf("CANCTRL: %x\n", MCP_read(CANCTRL));
-		
-		
+		printf("Status val: %x\n", MCP_read(CANSTAT));
+		printf("Control val: %x\n", MCP_read(CANCTRL));
+		printf("CanintE val: %x\n", MCP_read(CANINTE));
+		printf("CanintF val: %x\n", MCP_read(CANINTF));
+		printf("ERRFLG val: %x\n", MCP_read(EFLG));
 		// Heartbeat
-		PORTB ^= (1 << PB7);
-		//_delay_ms(200);
+		//PORTB ^= (1 << );
+		_delay_ms(1000);
 	
         
     }

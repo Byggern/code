@@ -18,6 +18,17 @@
 
 #endif
 
+typedef enum CAN_INTERRUPT_tag {
+	NOINT	= 0b000,
+	ERROR	= 0b001,
+	WAKEUP	= 0b010,
+	TX0		= 0b011,
+	TX1		= 0b100,
+	TX2		= 0b101,
+	RX0		= 0b110,
+	RX1		= 0b111
+} CAN_INTERRUPT;
+
 typedef struct CAN_MESSAGE_T {
 	uint8_t id;
 	uint8_t length;

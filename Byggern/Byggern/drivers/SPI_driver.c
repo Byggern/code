@@ -8,10 +8,7 @@ void SPI_init(void) {
 	/* MISO input */
 	SPI_PORT_DIR &= ~(1 << MISO_PIN);
 	/* MOSI, SCK and #SS output */
-	SPI_PORT_DIR |= (1 << MOSI_PIN) | (1 << SS_PIN) | (1 << SCK_PIN);
-	#if defined(__AVR_ATmega2560__)
-	SPI_PORT_DIR |= (1 << PB7);
-	#endif
+	SPI_PORT_DIR |= (1 << MOSI_PIN) | (1 << SS_PIN) | (1 << SS_PIN_LOGICAL) | (1 << SCK_PIN);
 	/* Enable SPI, master, clock rate fck*/
 	SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0);
 	

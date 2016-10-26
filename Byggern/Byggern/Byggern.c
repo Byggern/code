@@ -19,7 +19,8 @@
 #define UART0_BAUDRATE 9600
 /* default output is to COM1. */
 
-const char recvmsg[] PROGMEM = "Message received: %s\n";
+const char recvmsg[] PROGMEM = "Message received %s\n";
+const char *loop_string = "From 1";
 int main(void)
 {
 	/* System inits */
@@ -36,9 +37,9 @@ int main(void)
 	
 	//CAN_loopback_init();
 	
-	const char loop_string[] = "hello,W";
+
 	CAN_MESSAGE loop_message = {
-		.id = 1,
+		.id = 0,
 		.length = strlen(loop_string)+1,
 		.data = loop_string
 	};
@@ -47,17 +48,19 @@ int main(void)
     {
 		
 		printf("Status val: %d\n", MCP_read(CANCTRL));
-		_delay_ms(200);
+		//MCP_read(CANCTRL);
+		//printf("Status val: %d\n", 0xff);
+		
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		//MENU(menus);
 
-		/*CAN_send_message(0, 0, &loop_message);
+		CAN_send_message(1, 0, &loop_message);
 		if ( message_received){
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;
-		}*/
-		
+		}
+		_delay_ms(200);
 		
     }
 }
