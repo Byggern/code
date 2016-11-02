@@ -36,7 +36,7 @@ typedef struct CAN_MESSAGE_T {
 	} CAN_MESSAGE;
 	
 //Note that extern is a declaration of a variable without definition
-extern CAN_MESSAGE CAN_receive_buf;
+volatile extern CAN_MESSAGE CAN_receive_buf;
 
 extern bool message_received;
 void CAN_init(uint8_t id, uint8_t loopback);

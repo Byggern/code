@@ -20,7 +20,7 @@
 /* default output is to COM1. */
 
 const char recvmsg[] PROGMEM = "Message received: %s\n";
-const char *loop_string = "From 1";
+const char * loop_string = "From 1";
 int main(void)
 {
 	/* System inits */
@@ -59,7 +59,7 @@ int main(void)
 		_delay_ms(2000);
 		if ( message_received){
 			printf_P(recvmsg, CAN_receive_buf.data);
-			message_received=false;
+			message_received = false;
 		}
 		
     }

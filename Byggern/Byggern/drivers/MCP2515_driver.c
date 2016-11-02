@@ -15,7 +15,7 @@
 #include "SPI_driver.h"
 #include "MCP2515_driver.h"
 
-uint8_t MCP_read(uint8_t address){
+volatile uint8_t MCP_read(uint8_t address){
 	
 	SPI_slave_select();
 	SPI_send(0b00000011); // Read instruction
@@ -82,6 +82,16 @@ void MCP_init(void){
 	_delay_us(10);
 	
 }
+
+uint8_t MCP_status(void){
+	SPI_slave_select();
+	SPI_send(0b10100000);
+	uint8_t temp_status;
+	temp_status = SPI_receive();
+	SPI_slave_deselect();
+	return temp_status;
+}
+
 void MCP_select(){
 	SPI_slave_select();
 }
