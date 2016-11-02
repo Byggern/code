@@ -35,7 +35,7 @@ int main(void)
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 	
-	//CAN_loopback_init();
+	CAN_loopback_init();
 	
 
 	CAN_MESSAGE loop_message = {
@@ -55,7 +55,7 @@ int main(void)
 		toggle_bit(PORTB,2);
 		//MENU(menus);
 
-		CAN_send_message(1, 0, &loop_message);
+		CAN_send_message(0, 0, &loop_message);
 		if ( message_received){
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;

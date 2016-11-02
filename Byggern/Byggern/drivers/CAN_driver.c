@@ -155,12 +155,12 @@ ISR(INT2_vect){
 		}
 		case RX0:{
 			CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 1, 0);
+			MCP_bit_modify(CANINTF, 0, 0);
 			break;
 		}
 		case RX1:{
 			CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 0, 0);
+			MCP_bit_modify(CANINTF, 1, 0);
 			break;
 		}
 		default:{
@@ -209,12 +209,12 @@ ISR(INT4_vect){
 		}
 		case RX0:{
 			CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 1, 0);
+			MCP_bit_modify(CANINTF, 0, 0);
 			break;
 		}
 		case RX1:{
 			CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 0, 0);
+			MCP_bit_modify(CANINTF, 1, 0);
 			break;
 		}
 		default:{
