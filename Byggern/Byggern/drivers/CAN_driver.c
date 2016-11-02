@@ -27,22 +27,23 @@ CAN_MESSAGE test_message = {
 	.length = 1,
 	.data = &test_data
 };
-
-void CAN_init(uint8_t id)
+const char can_init_end[] PROGMEM = "can init end\n";
+void CAN_init(uint8_t id, uint8_t loopback )
 {
 	CAN_receive_buf.data = intr_recv_buf;
+	CAN_receive_buf.data[0] = 'a';
 	MCP_init();
 	
-	//enable interrupts
-	sei();
 	
+	//enable interrupts
 	// Set interrupt pin as output
 	INTERRUPT_DIR_PORT &= ~(1 << INTERRUPT_PIN);
+	
 	
 #if defined(__AVR_ATmega162__)
 	// Enable external interrupt on INT2
 	GICR |=  (1 << INT2);
-	// Interrupt on low signal
+	// Interrupt on falling edge
 	EMCUCR &= ~(1 << ISC2);
 	
 #elif defined(__AVR_ATmega2560__)
@@ -60,7 +61,7 @@ void CAN_init(uint8_t id)
 	MCP_bit_modify(CANINTE, 0, 1);
 
 	// Disable RTS pins
-	MCP_write(BFPCTRL, 0);
+	MCP_write(BFPCTRL, 0xff);
 	MCP_write(TXRTSCTRL, 0);
 	
 	//Receive buffer operation mode
@@ -79,8 +80,11 @@ void CAN_init(uint8_t id)
 	MCP_bit_modify(CANCTRL, 5, 0);
 	MCP_bit_modify(CANCTRL, 6, 0);
 	MCP_bit_modify(CANCTRL, 7, 0);
-	
-	
+	if ( loopback ){
+		 CAN_loopback_init();
+	}
+	sei();
+	printf_P(can_init_end);
 }
 
 void CAN_loopback_init(void)
@@ -122,9 +126,11 @@ void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
 
 
 #if defined(__AVR_ATmega162__)
+const char ISRruns[] PROGMEM = "ISR2 runs\n";
 ISR(INT2_vect){
-	int lambda = (MCP_read(0xe) & 0b1110)>>1;
-	switch(lambda){
+	printf_P(ISRruns);
+	int icod = (MCP_read(0xe) & 0b1110)>>1;
+	switch(icod){
 		case NOINT:{
 			printf_P(cannoint);
 			MCP_write(CANINTF, 0);
@@ -167,7 +173,7 @@ ISR(INT2_vect){
 			printf_P(candefault);
 			uint8_t iflg = MCP_read(CANINTF);
 			printf_P(canthisu);
-			printf("%x, %x\n", iflg, lambda);
+			printf("%x, %x\n", iflg, icod);
 			MCP_write(CANINTF, 0);
 		}
 	}
@@ -177,8 +183,8 @@ ISR(INT2_vect){
 }
 #elif defined(__AVR_ATmega2560__)
 ISR(INT4_vect){
-	int lambda = (MCP_read(0xe) & 0b1110)>>1;
-	switch(lambda){
+	int icod = (MCP_read(0xe) & 0b1110)>>1;
+	switch(icod){
 		case NOINT:{
 			printf_P(cannoint);
 			MCP_write(CANINTF, 0);
@@ -209,19 +215,19 @@ ISR(INT4_vect){
 		}
 		case RX0:{
 			CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 1, 0);
+			MCP_bit_modify(CANINTF, 0, 0);
 			break;
 		}
 		case RX1:{
 			CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 0, 0);
+			MCP_bit_modify(CANINTF, 1, 0);
 			break;
 		}
 		default:{
 			printf_P(candefault);
 			uint8_t iflg = MCP_read(CANINTF);
 			printf_P(canthisu);
-			printf("%x, %x\n", iflg, lambda);
+			printf("%x, %x\n", iflg, icod);
 			MCP_write(CANINTF, 0);
 		}
 	}
@@ -233,10 +239,19 @@ ISR(INT4_vect){
 void CAN_receive_message( uint8_t messageaddr, CAN_MESSAGE * message)
 {
 	message->length = MCP_read(messageaddr) & 0b1111;
-	
+	#if defined(__AVR_ATmega2560__) 
+	printf( "CAN_receive_message: ");
+	#endif
 	for (int i = 0 ; i < message->length; i++)
 	{
-		message->data[i]=MCP_read(messageaddr + 1 + i);
+		#if defined(__AVR_ATmega2560__)
+		printf( "%c ", MCP_read(messageaddr + 1 + i), MCP_read(messageaddr + 1 + i));
+		#endif	
+		message->data[i] = MCP_read(messageaddr + 1 + i);
 	}
+	
+	#if defined(__AVR_ATmega2560__)
+	printf( "\n");
+	#endif
 	message_received=true;
 }

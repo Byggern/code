@@ -32,14 +32,14 @@ typedef enum CAN_INTERRUPT_tag {
 typedef struct CAN_MESSAGE_T {
 	uint8_t id;
 	uint8_t length;
-	uint8_t * data;
+	uint8_t  *data;
 	} CAN_MESSAGE;
 	
 //Note that extern is a declaration of a variable without definition
 extern CAN_MESSAGE CAN_receive_buf;
 
 extern bool message_received;
-void CAN_init(uint8_t id);
+void CAN_init(uint8_t id, uint8_t loopback);
 
 void CAN_loopback_init(void);
 

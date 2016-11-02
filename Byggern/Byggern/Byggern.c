@@ -19,7 +19,7 @@
 #define UART0_BAUDRATE 9600
 /* default output is to COM1. */
 
-const char recvmsg[] PROGMEM = "Message received %s\n";
+const char recvmsg[] PROGMEM = "Message received: %s\n";
 const char *loop_string = "From 1";
 int main(void)
 {
@@ -31,11 +31,10 @@ int main(void)
 	HID_calibrate_joystick();
 	OLED_init();
 	MENU_init();
-	CAN_init(0);
+	CAN_init(0,1);
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
 	
-	//CAN_loopback_init();
 	
 
 	CAN_MESSAGE loop_message = {
@@ -48,7 +47,8 @@ int main(void)
     {
 		
 		printf("Status val: %d\n", MCP_read(CANCTRL));
-		//MCP_read(CANCTRL);
+		printf("CanintE val: %x\n", MCP_read(CANINTE));
+		printf("CanintF val: %x\n", MCP_read(CANINTF));		//MCP_read(CANCTRL);
 		//printf("Status val: %d\n", 0xff);
 		
 		/* Heart beat */
@@ -56,11 +56,11 @@ int main(void)
 		//MENU(menus);
 
 		CAN_send_message(1, 0, &loop_message);
+		_delay_ms(200);
 		if ( message_received){
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;
 		}
-		_delay_ms(200);
 		
     }
 }

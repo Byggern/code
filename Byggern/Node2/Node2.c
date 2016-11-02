@@ -5,6 +5,7 @@
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include <string.h>
+#include <avr/interrupt.h>
 
 #include "../Byggern/drivers/CAN_driver.h"
 #include "../Byggern/drivers/MCP2515_driver.h"
@@ -12,7 +13,7 @@
 #include "../Byggern/drivers/UART_driver.h"
 #define UART0_BAUDRATE 9600
 
-const char loop_string[] = "From 2";
+const char loop_string[] = "2";
 
 
 const char recvmsg[] PROGMEM = "Message received: %s\n";
@@ -27,10 +28,10 @@ int main(void)
 	printf("\n Communication up! \n");
 	_delay_ms(500);
 	
-	CAN_init(0);
+	CAN_init(1,1);
+	printf_P(recvmsg, CAN_receive_buf.data);
 	
 	printf("Status val: %x\n", MCP_read(CANSTAT));
-	//CAN_loopback_init();
 	printf("Status val: %x\n", MCP_read(CANSTAT));
 	
 	
@@ -39,15 +40,18 @@ int main(void)
 		.length = strlen(loop_string) + 1,
 		.data = loop_string
 	};
+	
     while(1)
     {
 		
 		//printf("Woho\n");
-		//CAN_send_message(1, 0, &loop_message);
+		CAN_send_message(1, 0, &loop_message);
 		if ( message_received){
 			printf("--");
+			cli();
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;
+			sei();
 		}
 		printf("Status val: %x\n", MCP_read(CANSTAT));
 		printf("Control val: %x\n", MCP_read(CANCTRL));
