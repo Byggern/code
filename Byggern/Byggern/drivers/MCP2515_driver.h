@@ -34,6 +34,10 @@
 
 uint8_t MCP_read(uint8_t address);
 
+uint8_t MCP_read_selected(uint8_t address);
+
+uint8_t MCP_read_buffer(uint8_t buffer);
+
 void MCP_write(uint8_t address, uint8_t byte);
 
 void MCP_request_to_send(uint8_t buffer);
@@ -46,4 +50,8 @@ void MCP_reset(void);
 
 void MCP_init(void);
 
+
+
+void MCP_select();
+void MCP_deselect();
 #endif /* MCP2515_DRIVER_H_ */

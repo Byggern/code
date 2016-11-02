@@ -46,17 +46,17 @@ int main(void)
     while(1)
     {
 		
-		printf("Status val: %d\n", MCP_read(CANCTRL));
+		/*printf("Status val: %d\n", MCP_read(CANCTRL));
 		printf("CanintE val: %x\n", MCP_read(CANINTE));
-		printf("CanintF val: %x\n", MCP_read(CANINTF));		//MCP_read(CANCTRL);
+		printf("CanintF val: %x\n", MCP_read(CANINTF));		//MCP_read(CANCTRL);*/
 		//printf("Status val: %d\n", 0xff);
 		
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		//MENU(menus);
 
-		CAN_send_message(1, 0, &loop_message);
-		_delay_ms(200);
+		CAN_send_message(0, 0, &loop_message);
+		_delay_ms(2000);
 		if ( message_received){
 			printf_P(recvmsg, CAN_receive_buf.data);
 			message_received=false;

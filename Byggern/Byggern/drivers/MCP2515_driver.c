@@ -25,6 +25,20 @@ uint8_t MCP_read(uint8_t address){
 	
 	return read_val;
 }
+uint8_t MCP_read_selected(uint8_t address){
+	
+	SPI_send(0b00000011); // Read instruction
+	SPI_send(address);
+	uint8_t read_val = SPI_receive();
+	return read_val;
+}
+uint8_t MCP_read_buffer(uint8_t buffer){
+	
+	SPI_slave_select();
+	SPI_send(0b1001 | (buffer<1)); // Read instruction
+	uint8_t read_val = SPI_receive();
+	return read_val;
+}
 
 void MCP_write(uint8_t address, uint8_t byte) {
 	SPI_slave_select();
@@ -67,4 +81,10 @@ void MCP_init(void){
 	MCP_reset();
 	_delay_us(10);
 	
+}
+void MCP_select(){
+	SPI_slave_select();
+}
+void MCP_deselect(){
+	SPI_slave_deselect();
 }

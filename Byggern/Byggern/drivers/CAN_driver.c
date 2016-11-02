@@ -124,6 +124,8 @@ void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
 	
 }
 
+const char rx0_int[]  PROGMEM = "can rx0 hit\n";
+const char rx1_int[]  PROGMEM = "can rx1 hit\n";
 
 #if defined(__AVR_ATmega162__)
 const char ISRruns[] PROGMEM = "ISR2 runs\n";
@@ -160,13 +162,15 @@ ISR(INT2_vect){
 			break;
 		}
 		case RX0:{
+			printf_P(rx0_int);
 			CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 1, 0);
+			MCP_bit_modify(CANINTF, 0, 0);
 			break;
 		}
 		case RX1:{
+			printf_P(rx1_int);
 			CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
-			MCP_bit_modify(CANINTF, 0, 0);
+			MCP_bit_modify(CANINTF, 1, 0);
 			break;
 		}
 		default:{
@@ -181,6 +185,7 @@ ISR(INT2_vect){
 	// Clear interrupt flag just to be sure
 	GIFR |= (1 << INTF2);
 }
+
 #elif defined(__AVR_ATmega2560__)
 ISR(INT4_vect){
 	int icod = (MCP_read(0xe) & 0b1110)>>1;
@@ -214,11 +219,13 @@ ISR(INT4_vect){
 			break;
 		}
 		case RX0:{
+			printf_P(rx0_int);
 			CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
 			MCP_bit_modify(CANINTF, 0, 0);
 			break;
 		}
 		case RX1:{
+			printf_P(rx1_int);
 			CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
 			MCP_bit_modify(CANINTF, 1, 0);
 			break;
@@ -238,18 +245,20 @@ ISR(INT4_vect){
 
 void CAN_receive_message( uint8_t messageaddr, CAN_MESSAGE * message)
 {
-	message->length = MCP_read(messageaddr) & 0b1111;
+	
+	MCP_select();
+	message->length = MCP_read_selected(messageaddr) & 0b1111;
 	#if defined(__AVR_ATmega2560__) 
 	printf( "CAN_receive_message: ");
 	#endif
 	for (int i = 0 ; i < message->length; i++)
 	{
 		#if defined(__AVR_ATmega2560__)
-		printf( "%c ", MCP_read(messageaddr + 1 + i), MCP_read(messageaddr + 1 + i));
+		printf( "%c ", MCP_read_selected(messageaddr + 1 + i));
 		#endif	
-		message->data[i] = MCP_read(messageaddr + 1 + i);
+		message->data[i] = MCP_read_selected(messageaddr + 1 + i);
 	}
-	
+	MCP_deselect();
 	#if defined(__AVR_ATmega2560__)
 	printf( "\n");
 	#endif
