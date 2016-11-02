@@ -3,6 +3,8 @@
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <stdio.h>
+#define F_CPU 4912000UL
+#include <util/delay.h>
 #include "CAN_driver.h"
 #include "MCP2515_driver.h"
 uint8_t test_data = 0b10100101;
@@ -10,14 +12,14 @@ uint8_t test_data = 0b10100101;
 const char canerror[] PROGMEM = "CAN interrupt due to error\n";
 const char candefault[] PROGMEM = "CAN interrupt due to unhandled case\n";
 const char canwake[] PROGMEM = "CAN interrupt due to being woken\n";
-const char cannoint[] PROGMEM = "CAN interrupt with no IFLG code\n";
+const char cannoint[] PROGMEM = "CAN interrupt with no IFLG code: %x\n";
 const char cantrans[] PROGMEM = "CAN interrupt due to transmission\n";
 const char canthise[] PROGMEM = "This is EFLG and CANINTF: ";
 const char canthisu[] PROGMEM = "This is INTF and ICOD: ";
 
 
 bool message_received = false;
-uint8_t intr_recv_buf[8] = {0,0,0,0,0,0,0,0};
+uint8_t intr_recv_buf[9] = {0,0,0,0,0,0,0,0,0};
 CAN_MESSAGE CAN_receive_buf;//={.data=intr_recv_buf};
 
 
@@ -53,10 +55,14 @@ void CAN_init(uint8_t id, uint8_t loopback )
 	EICRB &= ~( (1 << ISC40) | (1 << ISC41));
 #endif
 	
-	//Set Can interrupt bit for MSG Err, Wake Err, Error, Rx0, Rx1
-	MCP_bit_modify(CANINTE, 7, 1);
-	MCP_bit_modify(CANINTE, 6, 1);
-	MCP_bit_modify(CANINTE, 5, 1);
+	//Set Can interrupt bit for Rx0, Rx1
+	//Clear interrupt bit for  MSG Err, Wake Err, Error, Tx0, Tx1, Tx2
+	MCP_bit_modify(CANINTE, 7, 0);
+	MCP_bit_modify(CANINTE, 6, 0);
+	MCP_bit_modify(CANINTE, 5, 0);
+	MCP_bit_modify(CANINTE, 4, 0);
+	MCP_bit_modify(CANINTE, 3, 0);
+	MCP_bit_modify(CANINTE, 2, 0);
 	MCP_bit_modify(CANINTE, 1, 1);
 	MCP_bit_modify(CANINTE, 0, 1);
 
@@ -77,9 +83,11 @@ void CAN_init(uint8_t id, uint8_t loopback )
 	MCP_write(RXBnSIDH + RXB1_OFFSET,(id >> 3));
 	MCP_write(RXBnSIDL + RXB1_OFFSET,(id << 5));
 	
+	// Set CAN to normal operation mode
 	MCP_bit_modify(CANCTRL, 5, 0);
 	MCP_bit_modify(CANCTRL, 6, 0);
 	MCP_bit_modify(CANCTRL, 7, 0);
+	
 	if ( loopback ){
 		 CAN_loopback_init();
 	}
@@ -121,7 +129,6 @@ void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
 	}
 	
 	MCP_request_to_send(buffer);
-	
 }
 
 const char rx0_int[]  PROGMEM = "can rx0 hit\n";
@@ -134,7 +141,8 @@ ISR(INT2_vect){
 	int icod = (MCP_read(0xe) & 0b1110)>>1;
 	switch(icod){
 		case NOINT:{
-			printf_P(cannoint);
+			_delay_ms(20);
+			printf_P(cannoint, MCP_read(CANINTF));
 			MCP_write(CANINTF, 0);
 			break;
 		}
@@ -162,13 +170,13 @@ ISR(INT2_vect){
 			break;
 		}
 		case RX0:{
-			printf_P(rx0_int);
+			//printf_P(rx0_int);
 			CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
 			MCP_bit_modify(CANINTF, 0, 0);
 			break;
 		}
 		case RX1:{
-			printf_P(rx1_int);
+			//printf_P(rx1_int);
 			CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
 			MCP_bit_modify(CANINTF, 1, 0);
 			break;
@@ -181,9 +189,9 @@ ISR(INT2_vect){
 			MCP_write(CANINTF, 0);
 		}
 	}
-	
 	// Clear interrupt flag just to be sure
 	GIFR |= (1 << INTF2);
+	_delay_us(50);	
 }
 
 #elif defined(__AVR_ATmega2560__)
@@ -191,7 +199,7 @@ ISR(INT4_vect){
 	int icod = (MCP_read(0xe) & 0b1110)>>1;
 	switch(icod){
 		case NOINT:{
-			printf_P(cannoint);
+			printf_P(cannoint, MCP_read(CANINTF));
 			MCP_write(CANINTF, 0);
 			break;
 		}
@@ -246,19 +254,17 @@ ISR(INT4_vect){
 void CAN_receive_message( uint8_t messageaddr, CAN_MESSAGE * message)
 {
 	
-	MCP_select();
-	message->length = MCP_read_selected(messageaddr) & 0b1111;
+	message->length = MCP_read(messageaddr) & 0b1111;
 	#if defined(__AVR_ATmega2560__) 
-	printf( "CAN_receive_message: ");
+	printf( "CAN_receive_message :%i: ", message->length);
 	#endif
 	for (int i = 0 ; i < message->length; i++)
 	{
 		#if defined(__AVR_ATmega2560__)
-		printf( "%c ", MCP_read_selected(messageaddr + 1 + i));
+		printf( "%c ", MCP_read(messageaddr + 1 + i));
 		#endif	
-		message->data[i] = MCP_read_selected(messageaddr + 1 + i);
+		message->data[i] = MCP_read(messageaddr + 1 + i);
 	}
-	MCP_deselect();
 	#if defined(__AVR_ATmega2560__)
 	printf( "\n");
 	#endif

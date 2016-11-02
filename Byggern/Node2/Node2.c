@@ -13,8 +13,7 @@
 #include "../Byggern/drivers/UART_driver.h"
 #define UART0_BAUDRATE 9600
 
-const char loop_string[] = "2";
-
+const char *loop_string = "from 2";
 
 const char recvmsg[] PROGMEM = "Message received: %s\n";
 
