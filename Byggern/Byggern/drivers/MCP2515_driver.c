@@ -66,15 +66,12 @@ uint8_t MCP_read_status(void)
 
 void MCP_bit_modify(uint8_t reg, uint8_t bit, uint8_t val) {
 	SPI_slave_select();
-	SPI_send(0b00000101); // Command
+	SPI_send(0b00000101); // Bit modify instruction
 	SPI_send(reg);
 	SPI_send(1 << bit);
 	SPI_send(val << bit);
 	SPI_slave_deselect();
 }
-/*uint8_t prev_byte = MCP_read(reg);
-prev_byte = (prev_byte & (~(1 << bit))) | (val << bit);
-MCP_write(reg, prev_byte);*/
 
 void MCP_reset(void){
 	SPI_slave_select();

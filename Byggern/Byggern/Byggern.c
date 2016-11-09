@@ -45,18 +45,17 @@ int main(void)
 	
     while(1)
     {
-		//printf("%x\n", MCP_read(CANINTF));
-		/*printf("Status val: %d\n", MCP_read(CANCTRL));
-		printf("CanintE val: %x\n", MCP_read(CANINTE));
-		//MCP_read(CANCTRL);*/
-		//printf("Status val: %d\n", 0xff);
-		
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		//MENU(menus);
-
+		
+		JOY_VALS joystick_vals = HID_read_joystick();
+		loop_message.length = sizeof(JOY_VALS);
+		loop_message.data = &joystick_vals;
+		
 		CAN_send_message(1, 0, &loop_message);
-		_delay_ms(1000);
+		
+		//_delay_ms(1000);
 		
 		if ( message_received){
 			cli();
