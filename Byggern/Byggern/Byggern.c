@@ -21,6 +21,7 @@
 /* default output is to COM1. */
 
 unsigned char * loop_string = "From 1";
+uint8_t controls[8]={};
 const char recvmsg[] PROGMEM = "Message received: %s\n";
 
 int main(void)
@@ -48,10 +49,15 @@ int main(void)
 		/* Heart beat */
 		toggle_bit(PORTB,2);
 		//MENU(menus);
-		
+		JOY_VALS *joy_ptr = &controls[0];
+		uint8_t * button_ptr = &controls[4];
+		uint8_t * slider_ptr = &controls[5];
 		JOY_VALS joystick_vals = HID_read_joystick();
-		loop_message.length = sizeof(JOY_VALS);
-		loop_message.data = &joystick_vals;
+		*joy_ptr    = HID_read_joystick();
+		*button_ptr = HID_read_touch_button(LEFT_BUTTON);
+		*slider_ptr = HID_read_slider(LEFT_SLIDER);
+		loop_message.length = 6;//sizeof(JOY_VALS);
+		loop_message.data = controls;
 		
 		CAN_send_message(1, 0, &loop_message);
 		

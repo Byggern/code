@@ -22,7 +22,7 @@ void OLED_lr_bar_clear(){
 void OLED_magic(void){
 	for (int c = 0; c < 96; c++) {
 		OLED_set_cursor(0,0);
-		for (int pos = 0; pos < 96; pos++) {
+		for (int pos = 0; pos < 128; pos++) {
 			OLED_write_char(c);
 			OLED_cursor_increment(8);
 		}

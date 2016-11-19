@@ -143,6 +143,36 @@
     <Compile Include="CAN_driver.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\ADC_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\ADC_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\MOT_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\MOT_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\PWM_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\PWM_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\SOL_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\SOL_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\TWI_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\TWI_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="MCP2515_driver.c">
       <SubType>compile</SubType>
     </Compile>
@@ -155,6 +185,9 @@
     <Compile Include="UART_driver.c">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="drivers" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
