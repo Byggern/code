@@ -10,6 +10,8 @@
 #include "ADC_driver.h"
 
 #define JOY_DIR_THRESH 30
+#define UTRESHOLD 60
+#define LTRESHOLD 10
 
 JOY_CALIBRATE joystick_calibration_values;
 
@@ -148,54 +150,24 @@ JOY_DIR HID_read_joystick_direction() {
 
 
 JOY_DIR HID_read_joystick_direction_change() {
-	int utreshold = 60;
-	int ltreshold = 10;
-	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
-	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
+	int16_t x = HID_read_joystick_axis(X_AXIS) - 127;
+	int16_t y = HID_read_joystick_axis(Y_AXIS) - 127;
 	JOY_DIR current_dir = HID_read_joystick_direction();
-	if ( prev_dir == CENTER ) {
-		if (  abs(x) > utreshold || abs(y) > utreshold){
+	if (prev_dir == CENTER) {
+		if (abs(x) > UTRESHOLD || abs(y) > UTRESHOLD){
 			prev_dir = current_dir;
 			return current_dir;
 		} else {
 			return NOCHANGE;
 		}
-	}else{
-		if (abs(x) < ltreshold && abs(y) < ltreshold) {
+	} else {
+		if (abs(x) < LTRESHOLD && abs(y) < LTRESHOLD) {
 			prev_dir = CENTER;
 			return CENTER;
 		} else {
 			return NOCHANGE;
 		}
 	}
-	printf("Failed!\n");
-	
-	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
-		current_dir = CENTER;
-	} else {
-		if (abs(y) > abs(x)) {
-			if (y > 0) {
-				current_dir = UP;
-			} else {
-				current_dir = DOWN;
-			}
-		} else {
-			if (x > 0) {
-				current_dir = RIGHT;
-			} else {
-				current_dir = LEFT;
-			}
-		}
-	}
-	if ((abs(x) > JOY_DIR_THRESH + 80) || (abs(y) > JOY_DIR_THRESH + 80)
-		&& !(current_dir == UP && prev_dir == DOWN)
-		&& !(current_dir == DOWN && prev_dir == UP)
-		&& !(current_dir == LEFT && prev_dir == RIGHT)
-		&& !(current_dir == RIGHT && prev_dir == LEFT)) {
-		return prev_dir;
-	}
-	prev_dir = current_dir;
-	return current_dir;
 }
 
 uint8_t HID_read_slider(TOUCH_DEVICE device) {
