@@ -148,7 +148,6 @@ JOY_DIR HID_read_joystick_direction() {
 	return current_dir;
 }
 
-
 JOY_DIR HID_read_joystick_direction_change() {
 	int16_t x = HID_read_joystick_axis(X_AXIS) - 127;
 	int16_t y = HID_read_joystick_axis(Y_AXIS) - 127;

@@ -24,7 +24,7 @@ const char canthisu[] PROGMEM = "This is INTF and ICOD: ";
 const char can_send_timeout_msg[] PROGMEM = "CAN send timeout\n";
 
 bool message_received = false;
-uint8_t intr_recv_buf[9] = {0,0,0,0,0,0,0,0,0};
+uint8_t intr_recv_buf[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 volatile CAN_MESSAGE CAN_receive_buf;//={.data=intr_recv_buf};
 
 CAN_MESSAGE test_message = {
@@ -44,13 +44,11 @@ void CAN_init(uint8_t id, uint8_t loopback ) {
 	// Set interrupt pin as output
 	INTERRUPT_DIR_PORT &= ~(1 << INTERRUPT_PIN);
 	
-	
 #if defined(__AVR_ATmega162__)
 	// Enable external interrupt on INT2
 	GICR |=  (1 << INT2);
 	// Interrupt on falling edge
 	EMCUCR &= ~(1 << ISC2);
-	
 #elif defined(__AVR_ATmega2560__)
 	// Enable external interrupt on INT4
 	EIMSK |= (1 << INT4);
