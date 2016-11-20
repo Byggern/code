@@ -11,7 +11,7 @@
 #endif
 
 void UART0_init(uint32_t clock, uint32_t baud){
-	uint32_t ubrr = (clock /(16 * baud)) - 1;
+	uint32_t ubrr = (clock /(16 * baud)) - 1; // UART baud rate register
 	UBRR0H = (unsigned char) (ubrr >> 8);
 	UBRR0L = (unsigned char) (ubrr);
 	PRR0 &= ~(1 << PRUSART0);
