@@ -38,7 +38,7 @@
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
-    <avrtool>com.atmel.avrdbg.tool.avrdragon</avrtool>
+    <avrtool>com.atmel.avrdbg.tool.jtagice3plus</avrtool>
     <com_atmel_avrdbg_tool_atmelice>
       <ToolOptions>
         <InterfaceProperties>
@@ -55,7 +55,6 @@
     <com_atmel_avrdbg_tool_avrdragon>
       <ToolOptions>
         <InterfaceProperties>
-          <JtagDbgClock>200000</JtagDbgClock>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
@@ -63,6 +62,17 @@
       <ToolNumber>00A200019792</ToolNumber>
       <ToolName>AVR Dragon</ToolName>
     </com_atmel_avrdbg_tool_avrdragon>
+    <com_atmel_avrdbg_tool_jtagice3plus>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>200000</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagice3plus</ToolType>
+      <ToolNumber>J30200018263</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagice3plus>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -143,6 +153,36 @@
     <Compile Include="CAN_driver.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="drivers\ADC_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\ADC_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\MOT_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\MOT_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\PWM_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\PWM_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\SOL_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\SOL_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\TWI_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="drivers\TWI_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="MCP2515_driver.c">
       <SubType>compile</SubType>
     </Compile>
@@ -155,6 +195,16 @@
     <Compile Include="UART_driver.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="utils\GAME2_util.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\GAME2_util.c">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="drivers" />
+    <Folder Include="utils" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

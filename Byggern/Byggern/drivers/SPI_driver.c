@@ -22,7 +22,9 @@ void SPI_init(void) {
 	/* MOSI, SCK and #SS output */
 	SPI_PORT_DIR |= (1 << MOSI_PIN) | (1 << SS_PIN) | (1 << SS_PIN_LOGICAL) | (1 << SCK_PIN);
 	/* Enable SPI, master, clock rate fck*/
-	SPCR = (1 << SPE) | (1 << MSTR) | (0b11 << SPR0);
+	SPCR = (1 << SPE) | (1 << MSTR) ;
+	SPCR &= ~(0b11 << SPR0);
+	
 }
 
 void SPI_send(uint8_t byte) {

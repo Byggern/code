@@ -134,7 +134,7 @@ void CAN_send_message(uint8_t id, CAN_MESSAGE* message) {
 		MCP_write(data_reg, message->data[i]);
 	}
 	
-	MCP_request_to_send(buffer);
+	MCP_request_to_send();
 }
 
 const char rx0_int[]  PROGMEM = "can rx0 hit\n";
