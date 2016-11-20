@@ -12,16 +12,20 @@ void OLED_lr_bar(uint8_t x) {
 }
 
 void OLED_lr_bar_clear() {
-	for( uint8_t x= 1; x < 127;x++){
+	for (uint8_t x = 1; x < 127;x++) {
 		OLED_lr_bar(x);
 	}
 }
 
 void OLED_magic(void){
 	for (int c = 0; c < 96; c++) {
+		OLED_clear_screen();
+		OLED_draw();
 		OLED_set_cursor(0, 0);
 		for (int pos = 0; pos < 96; pos++) {
-			OLED_write_char(c);
+			if (pos == c) {
+				OLED_write_char(c);
+			}
 			OLED_cursor_increment(8);
 		}
 		OLED_set_cursor(3, 20);
