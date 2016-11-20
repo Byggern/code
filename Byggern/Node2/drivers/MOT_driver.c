@@ -15,7 +15,9 @@ void MOT_init(void){
 	MJ2_DIR = 0x0;
 	// Encoder control pins to output
 	MJ1_DIR |= (1 << ENC_SEL) | (1 << ENC_OE_INV) | (1 << ENC_RST_INV);
-	//Don't reset
+	//Reset
+	MJ1 &= ~(1 << ENC_RST_INV);
+	_delay_us(20);
 	MJ1 |= (1 << ENC_RST_INV);
 	
 	TWI_init();
@@ -46,9 +48,9 @@ int16_t MOT_read_encoder(void) {
 	// Read LSB
 	encoder_data |= MJ2;
 	// Reset encoder
-	MJ1 &= ~(1 << ENC_RST_INV);
-	_delay_us(20);
-	MJ1 |= (1 << ENC_RST_INV);
+	//MJ1 &= ~(1 << ENC_RST_INV);
+	//_delay_us(20);
+	//MJ1 |= (1 << ENC_RST_INV);
 	
 	return encoder_data;
 }
@@ -64,7 +66,7 @@ void MOT_set_direction(MOTOR_DIR dir){
 }
 
 void MOT_set_speed(uint8_t speed){
-	uint8_t motor_msg[2];
+	uint8_t motor_msg[3];
 	// DAC slave address
 	motor_msg[0] = 0b01011110;
 	// DAC command byte

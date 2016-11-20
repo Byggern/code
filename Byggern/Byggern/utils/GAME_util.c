@@ -15,7 +15,7 @@ uint8_t message_buf[8]={};
 	
 CAN_MESSAGE game_msg = {
 	.id = 1,
-	.length = 8,
+	.length = 7,
 	.data = message_buf
 };
 
@@ -32,9 +32,8 @@ void GAME_send_controls(void) {
 	*joy_ptr    = HID_read_joystick();
 	*button_ptr = HID_read_touch_button(LEFT_BUTTON);
 	*slider_ptr = HID_read_slider(LEFT_SLIDER);
-	
 	// Link game_msg to message_buf
-	game_msg.length = 8;
+	game_msg.length = 7;
 	game_msg.data = message_buf;
 	
 	// Send controls

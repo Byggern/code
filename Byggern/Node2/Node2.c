@@ -31,7 +31,6 @@ int main(void) {
 	PWM1_start();
 	ADC_init();
 	SOL_init();
-	MOT_init();
 	GAME2_init();
 	
 	sei();
@@ -47,10 +46,10 @@ int main(void) {
 		//_delay_ms(500);
 		
 		// Check messages
-		//GAME2_check_messages();
+		GAME2_check_messages();
 		
 		// Check sensors
-		GAME2_check_sensors();
+		//GAME2_check_sensors();
 		
 		GAME2_update_regulator();
 		

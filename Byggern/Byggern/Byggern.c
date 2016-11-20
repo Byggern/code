@@ -56,7 +56,7 @@ int main(void)
 		
 		//MENU(menus);
 		
-		//GAME_send_controls();
+		GAME_send_controls();
 		
 		
 		if ( message_received){
