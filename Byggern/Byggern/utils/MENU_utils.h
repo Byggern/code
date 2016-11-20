@@ -1,7 +1,7 @@
-#pragma once
-#include <stdint.h>
 #ifndef MENU_UTILS_H_
 #define MENU_UTILS_H_
+
+#include <stdint.h>
 
 #define MENU_COUNT 6
 

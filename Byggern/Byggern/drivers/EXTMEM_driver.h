@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef EXTMEM_DRIVER_H_
 #define EXTMEM_DRIVER_H_
 

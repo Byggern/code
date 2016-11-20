@@ -1,4 +1,3 @@
-#pragma once
 #ifndef HID_DRIVER_H_
 #define HID_DRIVER_H_
 
