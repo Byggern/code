@@ -5,8 +5,10 @@
 
 const char byggern[] PROGMEM = "BYGGERN\0";
 
+const char copy[] PROGMEM = "(C) Gruppe 27, 2016\0";
+
 void OLED_lr_bar(uint8_t x) {
-	OLED_write_line_state(x, 0, x+1, 64, 1);
+	OLED_write_line_state(x, 0, x + 1, 64, 1);
 	OLED_write_line_state(x - 1, 0, x, 64, 0);
 	OLED_draw();
 }
@@ -17,7 +19,7 @@ void OLED_lr_bar_clear() {
 	}
 }
 
-void OLED_magic(void){
+void OLED_magic(void) {
 	for (int c = 0; c < 96; c++) {
 		OLED_clear_screen();
 		OLED_draw();
@@ -28,8 +30,14 @@ void OLED_magic(void){
 			}
 			OLED_cursor_increment(8);
 		}
-		OLED_set_cursor(3, 20);
+		OLED_set_cursor(2, 32);
 		OLED_write_string_P(byggern);
 		OLED_draw();
 	}
+	OLED_clear_screen();
+	OLED_set_cursor(2, 32);
+	OLED_typewrite_string_P(byggern);
+	OLED_set_cursor(4, 10);
+	OLED_typewrite_string_P(copy);
+	OLED_draw();
 }

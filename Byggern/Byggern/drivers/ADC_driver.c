@@ -9,9 +9,9 @@
 
 #define ADC_CONV_TIME 40
 
-volatile uint8_t* adc_address = (uint8_t *)0x1400;
+volatile uint8_t* adc_address = (uint8_t*)0x1400;
 
-void ADC_init(void){
+void ADC_init(void) {
 	printf("Initializing ADC...\n");
 	clear_bit(DDRD, PD5); // Setup a pin to read interrupt line from ADC
 	if (ADC_test() == 1) {

@@ -1,8 +1,5 @@
-
-
 #ifndef PWM_DRIVER_H_
 #define PWM_DRIVER_H_
-
 
 #define PWM_PERIOD_US 20000
 #define PWM_MAX_US 2100
@@ -23,6 +20,5 @@ void PWM1_start(void);
 void PWM_set_duty(uint8_t duty);
 
 void PWM_stop(void);
-
 
 #endif /* PWM_DRIVER_H_ */

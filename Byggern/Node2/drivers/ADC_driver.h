@@ -16,5 +16,4 @@ void ADC_start(ADC_CHANNEL channel);
 
 uint16_t ADC_read(ADC_CHANNEL channel);
 
-
 #endif /* ADC_DRIVER_H_ */

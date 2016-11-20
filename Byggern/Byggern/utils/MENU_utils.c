@@ -10,10 +10,10 @@
 #include "DEBUG_utils.h"
 
 const char mainmenu[] PROGMEM = "Main Menu\0";
-const char utilsmenu[] PROGMEM = "Utils\0";
-const char hellomenu[] PROGMEM = "HelloFunc\0";
-const char calibratemenu[] PROGMEM = "CalJoyFunc\0";
-const char debugmenu[] PROGMEM = "DebugOut\0";
+const char utilsmenu[] PROGMEM = "Utilities\0";
+const char hellomenu[] PROGMEM = "Test function\0";
+const char calibratemenu[] PROGMEM = "Calibrate Joystick\0";
+const char debugmenu[] PROGMEM = "Show debug output\0";
 const char wipemenu[] PROGMEM = "Wipe screen\0";
 
 Menu menus[MENU_COUNT] = {
@@ -58,7 +58,7 @@ void MENU_redraw(Menu* menu, uint8_t position) {
 	OLED_draw();
 }
 
-void MENU(Menu * menu) {
+void MENU(Menu* menu) {
 	uint8_t position = 1;
 	if (menu->function) {
 		menu->function();
@@ -78,16 +78,16 @@ void MENU(Menu * menu) {
 
 			if (curr_button && curr_button != prev_button) {
 				/* draw star indicating 'busy' */
-				OLED_set_cursor(position,8);
+				OLED_set_cursor(position, 8);
 				OLED_write_char('*');
 				OLED_draw();
 				/* enter child menu */
 				MENU(menu->submenus[position - 1]);
 				/* redraw to remove star */
 				MENU_redraw(menu,position);
-				prev_button=curr_button;
+				prev_button = curr_button;
 			} else if (!curr_button && curr_button != prev_button) {
-				prev_button=curr_button;
+				prev_button = curr_button;
 			} else if (curr_direction != NOCHANGE) {
 				switch(curr_direction) {
 					case RIGHT:
