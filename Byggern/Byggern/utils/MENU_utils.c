@@ -9,8 +9,6 @@
 #include "../utils/OLED_utils.h"
 #include "DEBUG_utils.h"
 
-
-
 const char mainmenu[] PROGMEM = "Main Menu\0";
 const char utilsmenu[] PROGMEM = "Utils\0";
 const char hellomenu[] PROGMEM = "HelloFunc\0";
@@ -27,7 +25,6 @@ Menu menus[MENU_COUNT] = {
 	{.header = wipemenu,		.function = OLED_lr_bar_clear,		.length=0}
 };
 
-
 void MENU_link_menus(void) {
 	menus[0].submenus[0] = &menus[1];
 	menus[0].submenus[1] = &menus[2];
@@ -36,17 +33,17 @@ void MENU_link_menus(void) {
 	menus[1].submenus[2] = &menus[5];
 }
 
-void MENU_init(void){
+void MENU_init(void) {
 	MENU_link_menus();
 }
 
-void MENU_redraw( Menu * menu, uint8_t position){
+void MENU_redraw(Menu* menu, uint8_t position) {
 	OLED_clear_screen();
-	OLED_set_cursor(0,8);
+	OLED_set_cursor(0, 8);
 	OLED_write_string_P(menu->header);
-	for (int i = 0 ; i < (menu->length + 1); i++){
+	for (int i = 0 ; i < (menu->length + 1); i++) {
 		if (i == position) {
-			OLED_set_cursor(i,0);
+			OLED_set_cursor(i, 0);
 			if (position) {
 				OLED_write_string(">");
 			} else {
@@ -54,16 +51,16 @@ void MENU_redraw( Menu * menu, uint8_t position){
 			}
 		}
 	}
-	for (int i = 0; i < menu->length; i++){
+	for (int i = 0; i < menu->length; i++) {
 		OLED_set_cursor(i + 1,16);
 		OLED_write_string_P(menu->submenus[i]->header);
 	}
 	OLED_draw();
 }
 
-void MENU( Menu * menu){
+void MENU(Menu * menu) {
 	uint8_t position = 1;
-	if (menu->function){
+	if (menu->function) {
 		menu->function();
 	} else if (menu->submenus) {
 		MENU_redraw(menu, position);
@@ -79,20 +76,7 @@ void MENU( Menu * menu){
 			curr_button = HID_read_touch_button(LEFT_BUTTON);
 			JOY_DIR curr_direction = HID_read_joystick_direction_change();
 
-			/*
-			if change:
-				switch button:
-					case right
-						enter menu;
-					case left
-						exit menu;
-					case down:
-						go down;
-					case up 
-						go up;
-			
-			*/
-			if ( curr_button && curr_button != prev_button){
+			if (curr_button && curr_button != prev_button) {
 				/* draw star indicating 'busy' */
 				OLED_set_cursor(position,8);
 				OLED_write_char('*');
@@ -102,13 +86,14 @@ void MENU( Menu * menu){
 				/* redraw to remove star */
 				MENU_redraw(menu,position);
 				prev_button=curr_button;
-			}else if(!curr_button && curr_button != prev_button){
+			} else if (!curr_button && curr_button != prev_button) {
 				prev_button=curr_button;
-			}else if ( curr_direction != NOCHANGE ) {
-				switch(curr_direction){
+			} else if (curr_direction != NOCHANGE) {
+				switch(curr_direction) {
 					case RIGHT:
-						if ( position==0){not_finished=true;}
-						else{
+						if (position == 0) {
+							not_finished = true;
+						} else {
 							/* draw star indicating 'busy' */
 							OLED_set_cursor(position,8);
 							OLED_write_char('*');
@@ -128,7 +113,7 @@ void MENU( Menu * menu){
 						}
 						break;
 					case UP:
-						if (position-1 >= 0) {
+						if (position - 1 >= 0) {
 							position--;
 							MENU_redraw(menu, position);
 						}
@@ -141,44 +126,6 @@ void MENU( Menu * menu){
 			}
 		}
 	}
-			/*
-			if ((curr_button != prev_button) || ((curr_direction != prev_direction) && (curr_direction == RIGHT))) {
-				prev_button = curr_button;
-				prev_direction = curr_direction;
-
-				if(curr_button || (curr_direction == RIGHT)) {
-					if (position == 0) {
-						// header clicked 
-						not_finished = false;
-					} else { // menu clicked 
-						// draw star indicating 'busy' 
-						OLED_set_cursor(position,8);
-						OLED_write_char('*');
-						OLED_draw();
-						// enter child menu 
-						MENU(menu->submenus[position - 1]);
-						// redraw to remove star 
-						MENU_redraw(menu,position);
-					}
-				}
-			} else {
-				curr_direction = HID_read_joystick_direction();
-				if (prev_direction != curr_direction) {
-					prev_direction = curr_direction;
-					if (curr_direction == UP && (position > 0)) {
-						position--;
-					} else if (curr_direction == DOWN && (position < menu->length)) {
-						position++;
-					} else if (curr_direction == LEFT) {
-						not_finished = false;
-					}
-					if (curr_direction == UP || curr_direction == DOWN) {
-						MENU_redraw(menu, position);
-					}
-				}
-			}
-		}
-	}*/
 	// go to parent menu
 	return;
 }

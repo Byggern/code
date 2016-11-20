@@ -22,5 +22,4 @@ void MENU( Menu * menu);
 
 void MENU_init(void);
 
-
 #endif /* MENU_UTILS_H_ */
