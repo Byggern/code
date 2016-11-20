@@ -80,7 +80,7 @@ uint8_t HID_joystick_zero(JOY_AXIS axis) {
 	int8_t offset;
 	uint8_t deadzone;
 	
-	int i;
+	uint8_t i;
 	for (i = 0; i < 50; i++) {
 		current_adc_val = ADC_read_blocking(axis);
 		center_sum += current_adc_val;
@@ -112,7 +112,7 @@ uint8_t HID_joystick_zero(JOY_AXIS axis) {
 		printf("y offset: %d\n", joystick_calibration_values.y_offset);
 		printf("y deadzone: %d\n", joystick_calibration_values.y_deadzone);
 	}
-	return abs(deadzone)+abs(offset);
+	return abs(deadzone) + abs(offset);
 }
 
 JOY_VALS HID_read_joystick() {

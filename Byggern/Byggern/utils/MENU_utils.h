@@ -6,9 +6,9 @@
 #define MENU_COUNT 6
 
 typedef struct Menu_t {
-	const char * header;
-	void (* function)(void);
-	struct Menu_t *submenus[8];
+	const char* header;
+	void (*function)(void);
+	struct Menu_t* submenus[8];
 	uint8_t length;
 } Menu;
 
@@ -16,9 +16,9 @@ Menu menus[MENU_COUNT];
 
 void MENU_link_menus(void);
 
-void MENU_redraw( Menu * menu, uint8_t position);
+void MENU_redraw(Menu* menu, uint8_t position);
 
-void MENU( Menu * menu);
+void MENU(Menu* menu);
 
 void MENU_init(void);
 

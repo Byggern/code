@@ -7,6 +7,7 @@
 
 #include "../Node2/drivers/ADC_driver.h"
 
+#define ADC_CONV_TIME 300
 
 uint16_t adc_tail = 0;
 uint16_t adc_high = 200;
@@ -16,19 +17,19 @@ ADC_STATE ADC_current;
 
 float frontweight = 0.2;
 
-uint16_t ADC_smooth(){
-	adc_tail = adc_tail*(1-frontweight) + ADC_read(CHANNEL_0)*frontweight;
+uint16_t ADC_smooth() {
+	adc_tail = adc_tail * (1 - frontweight) + ADC_read(CHANNEL_0) * frontweight;
 	return adc_tail;
 }
 
-ADC_STATE ADC_state(){
+ADC_STATE ADC_state() {
 	uint16_t val = ADC_smooth();
-	if ( ADC_current == LOW){
-		if (val > adc_high){
+	if (ADC_current == LOW) {
+		if (val > adc_high) {
 			ADC_current = HIGH;
 		}
-	}else{
-		if (val < adc_low){
+	} else {
+		if (val < adc_low) {
 			ADC_current = LOW;
 		}
 	}
@@ -42,7 +43,7 @@ void ADC_init(void) {
 }
 
 void ADC_start(ADC_CHANNEL channel) {
-	// Choose correct channel
+	// choose correct channel
 	ADMUX |= (channel & 0b111);
 	// start conversion
 	ADCSRA |= (1 << ADSC);
@@ -50,7 +51,7 @@ void ADC_start(ADC_CHANNEL channel) {
 
 uint16_t ADC_read(ADC_CHANNEL channel) {
 	ADC_start(channel);
-	// Wait for ADC to finish
-	_delay_us(300);
+	// wait for ADC to finish
+	_delay_us(ADC_CONV_TIME);
 	return ADC;
 }

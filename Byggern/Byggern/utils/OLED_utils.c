@@ -20,11 +20,11 @@ void OLED_lr_bar_clear() {
 }
 
 void OLED_magic(void) {
-	for (int c = 0; c < 96; c++) {
+	for (uint8_t c = 0; c < 96; c++) {
 		OLED_clear_screen();
 		OLED_draw();
 		OLED_set_cursor(0, 0);
-		for (int pos = 0; pos < 96; pos++) {
+		for (uint8_t pos = 0; pos < 96; pos++) {
 			if (pos == c) {
 				OLED_write_char(c);
 			}

@@ -41,7 +41,7 @@ void MENU_redraw(Menu* menu, uint8_t position) {
 	OLED_clear_screen();
 	OLED_set_cursor(0, 8);
 	OLED_write_string_P(menu->header);
-	for (int i = 0 ; i < (menu->length + 1); i++) {
+	for (uint8_t i = 0 ; i < (menu->length + 1); i++) {
 		if (i == position) {
 			OLED_set_cursor(i, 0);
 			if (position) {
@@ -51,7 +51,7 @@ void MENU_redraw(Menu* menu, uint8_t position) {
 			}
 		}
 	}
-	for (int i = 0; i < menu->length; i++) {
+	for (uint8_t i = 0; i < menu->length; i++) {
 		OLED_set_cursor(i + 1,16);
 		OLED_write_string_P(menu->submenus[i]->header);
 	}

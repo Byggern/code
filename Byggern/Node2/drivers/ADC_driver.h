@@ -1,6 +1,8 @@
 #ifndef ADC_DRIVER_H_
 #define ADC_DRIVER_H_
+
 #include <stdint.h>
+
 typedef enum {
 	CHANNEL_0 = 0,
 	CHANNEL_1,
