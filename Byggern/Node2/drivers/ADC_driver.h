@@ -11,7 +11,10 @@ typedef enum {
 } ADC_CHANNEL;
 
 
-enum ADC_STATE{LOW,HIGH};
+typedef enum {
+	LOW,
+	HIGH
+} ADC_STATE;
 
 void ADC_init(void);
 
@@ -21,6 +24,6 @@ uint16_t ADC_read(ADC_CHANNEL channel);
 
 uint16_t ADC_smooth();
 
-enum ADC_STATE ADC_state();
+ADC_STATE ADC_state();
 
 #endif /* ADC_DRIVER_H_ */

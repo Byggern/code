@@ -43,7 +43,7 @@ void CAN_init(uint8_t id, uint8_t loopback);
 
 void CAN_loopback_init(void);
 
-void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message);
+void CAN_send_message(uint8_t id, CAN_MESSAGE * message);
 
 void CAN_receive_message( uint8_t buffer, CAN_MESSAGE * message);
 

@@ -180,6 +180,12 @@
     <Compile Include="utils\FONTS_utils.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="utils\GAME_util.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="utils\GAME_util.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="utils\MENU_utils.c">
       <SubType>compile</SubType>
     </Compile>

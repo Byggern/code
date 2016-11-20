@@ -16,16 +16,14 @@
 #include "utils/DEBUG_utils.h"
 #include "drivers/CAN_driver.h"
 #include "drivers/MCP2515_driver.h"
+#include "utils/GAME_util.h"
 #include <avr/interrupt.h>
 #define UART0_BAUDRATE 9600
-/* default output is to COM1. */
 
 unsigned char * loop_string = "From 1";
-uint8_t controls[8]={};
 const char recvmsg[] PROGMEM = "Message received: %s\n";
 
-int main(void)
-{
+void SYS_init(void) {
 	/* System inits */
 	UART0_init(F_CPU, UART0_BAUDRATE);
 	printf("\n\n");
@@ -37,40 +35,48 @@ int main(void)
 	CAN_init(0,0);
 	
 	set_bit(DDRB,2);  // Output on heartbeat led pin
+}
 
+int main(void)
+{
+	SYS_init();
+
+
+	
 	CAN_MESSAGE loop_message = {
 		.id = 1,
-		.length = strlen((const char*)loop_string),
+		.length = 6,
 		.data = loop_string
 	};
 	
-    while(1)
-    {
+	while(1)
+	{
 		/* Heart beat */
 		toggle_bit(PORTB,2);
+		
 		//MENU(menus);
-		JOY_VALS *joy_ptr = &controls[0];
-		uint8_t * button_ptr = &controls[4];
-		uint8_t * slider_ptr = &controls[5];
-		JOY_VALS joystick_vals = HID_read_joystick();
-		*joy_ptr    = HID_read_joystick();
-		*button_ptr = HID_read_touch_button(LEFT_BUTTON);
-		*slider_ptr = HID_read_slider(LEFT_SLIDER);
-		loop_message.length = 6;//sizeof(JOY_VALS);
-		loop_message.data = controls;
 		
-		CAN_send_message(1, 0, &loop_message);
+		//GAME_send_controls();
 		
-		//_delay_ms(1000);
 		
 		if ( message_received){
-			cli();
+			switch(CAN_receive_buf.data[0]) {
+				case GAME_MISS:
+					printf("GAME MISS\n");
+					message_received = false;
+				break;
+			}
+			
+			/*cli();
 			printf("--");
 			
 			printf_P(recvmsg);
-			printf("%s\n",CAN_receive_buf.data);
+			printf("\nLen: %d\n", CAN_receive_buf.length);
+			printf("%s\n", CAN_receive_buf.data);
 			message_received = false;
-			sei();
+			sei();*/
 		}
-    }
+		
+		//CAN_send_message(1, &loop_message);
+	}
 }

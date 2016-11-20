@@ -29,7 +29,7 @@ void MOT_init(void){
 	MOT_set_speed(0);
 }
 
-int16_t MOT_read_encoder(void){
+int16_t MOT_read_encoder(void) {
 	int16_t encoder_data;
 	//Enable output
 	MJ1 &= ~(1 << ENC_OE_INV);

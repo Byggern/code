@@ -106,8 +106,8 @@ void CAN_loopback_init(void)
 	MCP_bit_modify(CANCTRL,7,0);
 }
 
-void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
-	uint8_t buf_offset = TXB0_OFFSET; // Buffer offset TODO: Make flexible buf_offset = buffer etc..
+void CAN_send_message(uint8_t id, CAN_MESSAGE * message) {
+	uint8_t buf_offset = TXB0_OFFSET;
 	int send_count = 0;
 	
 	// Check if TX buffer is ready 
@@ -139,7 +139,7 @@ void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
 		MCP_write(data_reg, message->data[i]);
 	}
 	
-	MCP_request_to_send(buffer);
+	MCP_request_to_send();
 }
 
 const char rx0_int[]  PROGMEM = "can rx0 hit\n";

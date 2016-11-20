@@ -48,8 +48,9 @@ void MCP_write(uint8_t address, uint8_t byte) {
 	SPI_slave_deselect();
 }
 
-void MCP_request_to_send(uint8_t buffer)
+void MCP_request_to_send(void)
 {
+	uint8_t buffer = 0;
 	SPI_slave_select();
 	SPI_send(0b10000000 | (1 << buffer));
 	SPI_slave_deselect();
