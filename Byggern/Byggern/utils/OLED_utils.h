@@ -7,4 +7,6 @@ void OLED_lr_bar_clear();
 
 void OLED_magic(void);
 
+void OLED_print_bitmap(void);
+
 #endif /* OLED_UTILS_H_ */

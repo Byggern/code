@@ -13,10 +13,14 @@ void OLED_lr_bar(uint8_t x) {
 	OLED_draw();
 }
 
-void OLED_lr_bar_clear() {
+void OLED_lr_bar_clear(void) {
 	for (uint8_t x = 1; x < 127;x++) {
 		OLED_lr_bar(x);
 	}
+}
+
+void OLED_print_bitmap(void) {
+	
 }
 
 void OLED_magic(void) {
