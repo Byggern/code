@@ -1,4 +1,3 @@
-#pragma once
 #ifndef OLED_DRIVER_H_
 #define OLED_DRIVER_H_
 
