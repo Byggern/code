@@ -23,22 +23,19 @@ const char canthise[] PROGMEM = "This is EFLG and CANINTF: ";
 const char canthisu[] PROGMEM = "This is INTF and ICOD: ";
 const char can_send_timeout_msg[] PROGMEM = "CAN send timeout\n";
 
-
 bool message_received = false;
 uint8_t intr_recv_buf[9] = {0,0,0,0,0,0,0,0,0};
 volatile CAN_MESSAGE CAN_receive_buf;//={.data=intr_recv_buf};
-
-
 
 CAN_MESSAGE test_message = {
 	.id = 0,
 	.length = 1,
 	.data = &test_data
 };
+
 const char can_init_end[] PROGMEM = "can init end\n";
 
-void CAN_init(uint8_t id, uint8_t loopback )
-{
+void CAN_init(uint8_t id, uint8_t loopback ) {
 	CAN_receive_buf.data = intr_recv_buf;
 	CAN_receive_buf.data[0] = 'a';
 	MCP_init();
@@ -80,40 +77,37 @@ void CAN_init(uint8_t id, uint8_t loopback )
 	MCP_bit_modify(RXBnCTRL + RXB1_OFFSET,5,1);
 	MCP_bit_modify(RXBnCTRL + RXB1_OFFSET,6,0);
 	
-	
 	MCP_write(RXBnSIDH + RXB0_OFFSET,(id >> 3));
 	MCP_write(RXBnSIDL + RXB0_OFFSET,(id << 5));
 	MCP_write(RXBnSIDH + RXB1_OFFSET,(id >> 3));
 	MCP_write(RXBnSIDL + RXB1_OFFSET,(id << 5));
 
-	// Set CAN to loopback mode
-	if ( loopback ){
-		 CAN_loopback_init();
-	} // Or to normal operation
-	else {
-			MCP_bit_modify(CANCTRL, 5, 0);
-			MCP_bit_modify(CANCTRL, 6, 0);
-			MCP_bit_modify(CANCTRL, 7, 0);
+	if (loopback) {
+		// Set CAN to loopback mode
+		CAN_loopback_init();
+	} else {
+		// Or to normal operation
+		MCP_bit_modify(CANCTRL, 5, 0);
+		MCP_bit_modify(CANCTRL, 6, 0);
+		MCP_bit_modify(CANCTRL, 7, 0);
 	}
 	printf_P(can_init_end);
 	sei();
 }
 
-void CAN_loopback_init(void)
-{
+void CAN_loopback_init(void) {
 	MCP_bit_modify(CANCTRL,5,0);
 	MCP_bit_modify(CANCTRL,6,1);
 	MCP_bit_modify(CANCTRL,7,0);
 }
 
-void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
-	uint8_t buf_offset = TXB0_OFFSET; // Buffer offset TODO: Make flexible buf_offset = buffer etc..
+void CAN_send_message(uint8_t id, CAN_MESSAGE* message) {
+	uint8_t buffer_offset = TXB0_OFFSET;
 	int send_count = 0;
 	
 	// Check if TX buffer is ready 
-	while(MCP_read(TXBnCTRL + buf_offset) & 0b1000)
+	while(MCP_read(TXBnCTRL + buffer_offset) & 0b1000)
 	{
-		//printf("TxW\n");
 		// TXB currently pending transmission
 		send_count++;
 		if (send_count > 1000) {
@@ -123,19 +117,20 @@ void CAN_send_message(uint8_t id, uint8_t buffer, CAN_MESSAGE * message) {
 	}
 	
 	// Set message ID to be transmitted 
-	MCP_write(TXBnSIDH + buf_offset, (id >> 3));
-	MCP_write(TXBnSIDL + buf_offset, (id << 5));
+	MCP_write(TXBnSIDH + buffer_offset, (id >> 3));
+	MCP_write(TXBnSIDL + buffer_offset, (id << 5));
+	
 	// TXBnCTRL 1:0 = 0b11
-	MCP_bit_modify(TXBnCTRL + buf_offset, 0, 1);
-	MCP_bit_modify(TXBnCTRL + buf_offset, 1, 1);
-	MCP_bit_modify(TXBnCTRL + buf_offset, 3, 1);
+	MCP_bit_modify(TXBnCTRL + buffer_offset, 0, 1);
+	MCP_bit_modify(TXBnCTRL + buffer_offset, 1, 1);
+	MCP_bit_modify(TXBnCTRL + buffer_offset, 3, 1);
 
 	_delay_us(100);
-	MCP_write(TXBnDLC + buf_offset, ((message->length) & 0b1111));
+	MCP_write(TXBnDLC + buffer_offset, ((message->length) & 0b1111));
 	
 	// Write in data
 	for (uint8_t i = 0; i < message->length; i++) {
-		uint8_t data_reg = TXBnDm + buf_offset + i;
+		uint8_t data_reg = TXBnDm + buffer_offset + i;
 		MCP_write(data_reg, message->data[i]);
 	}
 	
@@ -152,15 +147,12 @@ ISR(INT2_vect){
 const char ISRruns[] PROGMEM = "INT4 runs\n";
 ISR(INT4_vect){
 #endif
-
 	uint16_t ISR_counter = 0;
-	//printf_P(ISRruns);
 	while(ISR_counter < 10000) {
-		
 		ISR_counter++;
 		uint8_t icod = (MCP_read(CANSTAT) & 0b1110)>>1;
-		switch(icod){
-			case NOINT:{
+		switch(icod) {
+			case NOINT: {
 				//printf_P(cannoint, MCP_read(CANINTF));
 				MCP_write(CANINTF, 0);
 				// Set interrupt flag to clear it, just to be sure
@@ -169,7 +161,7 @@ ISR(INT4_vect){
 				#endif
 				return;
 			}
-			case ERROR:{
+			case ERROR: {
 				//printf_P(canerror);
 				uint8_t eflg = MCP_read(EFLG);
 				uint8_t iflg = MCP_read(CANINTF);
@@ -181,55 +173,43 @@ ISR(INT4_vect){
 				MCP_write(EFLG,0);
 				break;
 			}
-			case WAKEUP:{
+			case WAKEUP: {
 				//printf_P(canwake);
 				MCP_bit_modify(CANINTF, 6, 0);
 				break;
 			}
 			case TX0: // fall through
 			case TX1: // fall through
-			case TX2:{
-				//printf_P(cantrans);
+			case TX2: {
 				MCP_bit_modify(CANINTF, 2, 0);
 				MCP_bit_modify(CANINTF, 3, 0);
 				MCP_bit_modify(CANINTF, 4, 0);
 				break;
 			}
-			case RX0:{
-				//printf_P(rx0_int);
+			case RX0: {
 				CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
 				MCP_bit_modify(CANINTF, 0, 0);
 				break;
 			}
-			case RX1:{
-				//printf_P(rx1_int);
+			case RX1: {
 				CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
 				MCP_bit_modify(CANINTF, 1, 0);
 				break;
 			}
-			default:{
-				//printf_P(candefault);
+			default: {
 				uint8_t iflg = MCP_read(CANINTF);
-				//printf_P(canthisu);
-				//printf("%x, %x\n", iflg, icod);
 				MCP_write(CANINTF, 0);
 			}
 		}
 	}
-
 }
 
 
 
-void CAN_receive_message( uint8_t messageaddr, CAN_MESSAGE * message)
-{
+void CAN_receive_message(uint8_t messageaddr, CAN_MESSAGE* message) {
 	message->length = MCP_read(messageaddr) & 0b1111;
-	//printf( "CAN_receive_status :%x: \n", MCP_status());
-	//printf( "receive_length: %x \n", message->length);
-   
-	for (int i = 0 ; (i < message->length) && (i < 8); i++)
-	{
+	for (int i = 0 ; (i < message->length) && (i < 8); i++) {
 		message->data[i] = MCP_read(messageaddr + 1 + i);
 	}
-	message_received=true;
+	message_received = true;
 }

@@ -20,11 +20,10 @@
 #define UART0_BAUDRATE 9600
 /* default output is to COM1. */
 
-unsigned char * loop_string = "From 1";
+unsigned char* loop_string = "From 1";
 const char recvmsg[] PROGMEM = "Message received: %s\n";
 
-int main(void)
-{
+int main(void) {
 	/* System inits */
 	UART0_init(F_CPU, UART0_BAUDRATE);
 	printf("\n\n");
@@ -33,9 +32,9 @@ int main(void)
 	HID_calibrate_joystick();
 	OLED_init();
 	MENU_init();
-	CAN_init(0,0);
+	CAN_init(0, 0);
 	
-	set_bit(DDRB,2);  // Output on heartbeat led pin
+	set_bit(DDRB, 2);  // Output on heartbeat led pin
 
 	CAN_MESSAGE loop_message = {
 		.id = 1,
@@ -43,24 +42,22 @@ int main(void)
 		.data = loop_string
 	};
 	
-    while(1)
-    {
+    while(1) {
 		/* Heart beat */
-		toggle_bit(PORTB,2);
+		toggle_bit(PORTB, 2);
 		//MENU(menus);
 		
 		JOY_VALS joystick_vals = HID_read_joystick();
 		loop_message.length = sizeof(JOY_VALS);
 		loop_message.data = &joystick_vals;
 		
-		CAN_send_message(1, 0, &loop_message);
+		CAN_send_message(1, &loop_message);
 		
 		//_delay_ms(1000);
 		
-		if ( message_received){
+		if (message_received){
 			cli();
 			printf("--");
-			
 			printf_P(recvmsg);
 			printf("%s\n",CAN_receive_buf.data);
 			message_received = false;
