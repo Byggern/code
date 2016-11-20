@@ -153,7 +153,7 @@ JOY_DIR HID_read_joystick_direction_change() {
 	int16_t y = HID_read_joystick_axis(Y_AXIS) - 127;
 	JOY_DIR current_dir = HID_read_joystick_direction();
 	if (prev_dir == CENTER) {
-		if (abs(x) > UTRESHOLD || abs(y) > UTRESHOLD){
+		if (abs(x) > UTRESHOLD || abs(y) > UTRESHOLD) {
 			prev_dir = current_dir;
 			return current_dir;
 		} else {
@@ -192,7 +192,7 @@ uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 			}
         case RIGHT_BUTTON:
             clear_bit(DDRD, PD3);
-            if (PIND & (1 << PD3)){
+            if (PIND & (1 << PD3)) {
 	            return 1;
 	        } else {
 	            return 0;

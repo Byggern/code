@@ -131,14 +131,14 @@ void OLED_typewrite_string_P(const char* pgmptr) {
 }
 
 void OLED_write_pixel(uint8_t x, uint8_t y, uint8_t state) {
-	if ((x > 127) || (y > 63)){
+	if ((x > 127) || (y > 63)) {
 		return;
 	}
 	uint8_t page = y / 8;
 	uint8_t bit_pos = y % 8;
 	uint8_t byte = (1 << bit_pos);
 	OLED_set_cursor(page, x);
-	if(state){
+	if (state) {
 		OLED_vram[OLED_column + (128 * OLED_page)] |= byte;
 	} else {
 		OLED_vram[OLED_column + (128 * OLED_page)] &= ~byte;
@@ -159,35 +159,35 @@ void OLED_write_line_state(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8
 		y1 = temp;
 	}
 
-	int deltax = x1 - x0;
-	int deltay = y1 - y0;
-	int gentleness = deltax / deltay;
+	int delta_x = x1 - x0;
+	int delta_y = y1 - y0;
+	int gentleness = delta_x / delta_y;
 	if (abs(gentleness) >= 1) {
-		if (gentleness >= 0){
-			for (int rely = 0 ; rely < deltay; rely++) {
-			for (int relx = 0 ; relx < gentleness; relx++) {
-				OLED_write_pixel(x0 + relx + (rely * gentleness), y0 + rely,state);
-			}
+		if (gentleness >= 0) {
+			for (int rel_y = 0 ; rel_y < delta_y; rel_y++) {
+				for (int rel_x = 0 ; rel_x < gentleness; rel_x++) {
+					OLED_write_pixel(x0 + rel_x + (rel_y * gentleness), y0 + rel_y, state);
+				}
 			}
 		} else {
-			for (int rely = 0; rely > deltay; rely--) {
-				for (int relx = 0; relx < -gentleness; relx++) {
-					OLED_write_pixel(x0 + relx + (rely * gentleness), y0 + rely,state);
+			for (int rel_y = 0; rel_y > delta_y; rel_y--) {
+				for (int rel_x = 0; rel_x < -gentleness; rel_x++) {
+					OLED_write_pixel(x0 + rel_x + (rel_y * gentleness), y0 + rel_y, state);
 				}
 			}
 		}
 	} else {
-		gentleness = deltay / deltax;
+		gentleness = delta_y / delta_x;
 		if (gentleness >= 0){
-			for (int relx = 0; relx < deltax; relx++){
-				for ( int rely = 0 ; rely < gentleness; rely++) {
-					OLED_write_pixel(x0 + relx, y0 + rely + relx * gentleness, state);
+			for (int rel_x = 0; rel_x < delta_x; rel_x++){
+				for (int rel_y = 0 ; rel_y < gentleness; rel_y++) {
+					OLED_write_pixel(x0 + rel_x, y0 + rel_y + rel_x * gentleness, state);
 				}
 			}
 		} else {
-			for (int relx = 0; relx < deltax; relx++) {
-				for (int rely = 0; rely < -gentleness; rely++) {
-					OLED_write_pixel(x0 + relx, y0 + -rely + relx * gentleness, state);
+			for (int rel_x = 0; rel_x < delta_x; rel_x++) {
+				for (int rel_y = 0; rel_y < -gentleness; rel_y++) {
+					OLED_write_pixel(x0 + rel_x, y0 + -rel_y + rel_x * gentleness, state);
 				}
 			}
 		}
