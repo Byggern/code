@@ -20,7 +20,9 @@ void PWM1_start(void) {
 }
 
 void PWM_set_duty(uint8_t duty) {
+	// Convert from PWM duty cycle percentage to timer ticks
 	uint16_t duty_ticks = PWM_DUTY_OFFSET +  (uint16_t)duty * 24;
+	// Make sure PWM output is within servo bounds
 	if(duty_ticks < 1800) {
 		duty_ticks = 1800;
 	} else if (duty_ticks > 4200) {
