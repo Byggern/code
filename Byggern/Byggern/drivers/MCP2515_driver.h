@@ -1,5 +1,3 @@
-
-
 #ifndef MCP2515_DRIVER_H_
 #define MCP2515_DRIVER_H_
 
@@ -10,7 +8,6 @@
 #define EFLG 0x2d
 #define BFPCTRL 0x0c
 #define TXRTSCTRL 0x0d
-
 
 #define TXB0_OFFSET 0x00
 #define TXB1_OFFSET 0x10
@@ -28,7 +25,6 @@
 #define RXBnDm   0x66
 #define RXB0_OFFSET 0x00
 #define RXB1_OFFSET 0x10
-
 
 #include <stdint.h>
 
@@ -53,5 +49,6 @@ void MCP_init(void);
 uint8_t MCP_status(void);
 
 void MCP_select();
+
 void MCP_deselect();
 #endif /* MCP2515_DRIVER_H_ */

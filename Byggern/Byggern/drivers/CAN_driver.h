@@ -3,19 +3,16 @@
 #include <stdbool.h>
 
 #define CANINTE 0x2b
+
 /* Set up pins corresponding to boards */
 #if defined(__AVR_ATmega162__)
-
-#define INTERRUPT_DIR_PORT DDRE
-#define INTERRUPT_PIN PE0
-#define CAN_ID 0
-
+	#define INTERRUPT_DIR_PORT DDRE
+	#define INTERRUPT_PIN PE0
+	#define CAN_ID 0
 #elif defined(__AVR_ATmega2560__)
-
-#define INTERRUPT_DIR_PORT DDRE
-#define INTERRUPT_PIN PE4
-#define CAN_ID 1
-
+	#define INTERRUPT_DIR_PORT DDRE
+	#define INTERRUPT_PIN PE4
+	#define CAN_ID 1
 #endif
 
 typedef enum CAN_INTERRUPT_tag {
@@ -33,12 +30,12 @@ typedef struct CAN_MESSAGE_T {
 	uint8_t id;
 	uint8_t length;
 	uint8_t  *data;
-	} CAN_MESSAGE;
+} CAN_MESSAGE;
 	
-//Note that extern is a declaration of a variable without definition
 volatile extern CAN_MESSAGE CAN_receive_buf;
 
 extern bool message_received;
+
 void CAN_init(uint8_t id, uint8_t loopback);
 
 void CAN_loopback_init(void);

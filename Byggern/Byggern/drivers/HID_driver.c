@@ -14,22 +14,22 @@
 JOY_CALIBRATE joystick_calibration_values;
 
 int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t output_min, int16_t output_max) {
-	return (input - input_min)*(output_max - output_min)/(input_max - input_min) + output_min;
+	return (input - input_min) * (output_max - output_min) / (input_max - input_min) + output_min;
 }
 
 /* Joystick and Button Functions */
 uint8_t HID_read_joystick_axis(JOY_AXIS axis) {
 	uint8_t adc_val = ADC_read_blocking(axis);
 	uint8_t current_joy_val;
-	if(axis == X_AXIS) {
-		current_joy_val = mapToRange(adc_val - joystick_calibration_values.x_offset, 0-joystick_calibration_values.x_offset, 255-joystick_calibration_values.x_offset, 0, 255);
-		if((current_joy_val > 127 + joystick_calibration_values.x_deadzone) | (current_joy_val < 127 - joystick_calibration_values.x_deadzone)) {
+	if (axis == X_AXIS) {
+		current_joy_val = mapToRange(adc_val - joystick_calibration_values.x_offset, 0 - joystick_calibration_values.x_offset, 255 - joystick_calibration_values.x_offset, 0, 255);
+		if ((current_joy_val > 127 + joystick_calibration_values.x_deadzone) | (current_joy_val < 127 - joystick_calibration_values.x_deadzone)) {
 			return current_joy_val;
 		} else {
 			return 127;
 		}
 	} else {
-		current_joy_val = mapToRange(adc_val - joystick_calibration_values.y_offset, 0-joystick_calibration_values.y_offset, 255-joystick_calibration_values.y_offset, 0, 255);
+		current_joy_val = mapToRange(adc_val - joystick_calibration_values.y_offset, 0 - joystick_calibration_values.y_offset, 255 - joystick_calibration_values.y_offset, 0, 255);
 		if((current_joy_val > 127 + joystick_calibration_values.y_deadzone) | (current_joy_val < 127 - joystick_calibration_values.y_deadzone)) {
 			return current_joy_val;
 		} else {
@@ -56,14 +56,10 @@ void HID_calibrate_joystick(void) {
 	
 	if (x_offset_deadzone_sum > 15) {
 		printf("X axis calibration failed! (Offset+deadzone out of bounds)\n");
-	} else {
-		/*printf("X axis calibrated.\n");*/
 	}
 	
 	if (y_offset_deadzone_sum > 15) {
 		printf("Y axis calibration failed! (Offset+deadzone out of bounds)\n");
-	} else {
-		/*printf("Y axis calibrated.\n");*/
 	}
 	
 	if (x_offset_deadzone_sum > 15 || y_offset_deadzone_sum > 15) {
@@ -95,15 +91,15 @@ uint8_t HID_joystick_zero(JOY_AXIS axis) {
 		_delay_ms(10);
 	}
 	
-	offset = center_sum/50 - 127;
+	offset = center_sum / 50 - 127;
 	
-	if (abs(axis_max-127) > abs(axis_min-127)) {
-		deadzone = abs(axis_max-127);
+	if (abs(axis_max - 127) > abs(axis_min - 127)) {
+		deadzone = abs(axis_max - 127);
 	} else {
-		deadzone = abs(axis_min-127);
+		deadzone = abs(axis_min - 127);
 	}
 	
-	if(axis == X_AXIS) {
+	if (axis == X_AXIS) {
 		joystick_calibration_values.x_offset = offset;
 		joystick_calibration_values.x_deadzone = deadzone;
 		printf("x offset: %d\n", joystick_calibration_values.x_offset);
@@ -126,23 +122,23 @@ JOY_VALS HID_read_joystick() {
 
 JOY_DIR prev_dir = CENTER;
 
-JOY_DIR HID_read_joystick_direction(){
+JOY_DIR HID_read_joystick_direction() {
 	JOY_DIR current_dir = CENTER;
-	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
-	int16_t y = HID_read_joystick_axis(Y_AXIS)-127;
+	int16_t x = HID_read_joystick_axis(X_AXIS) - 127;
+	int16_t y = HID_read_joystick_axis(Y_AXIS) - 127;
 	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
 		current_dir = CENTER;
-		} else {
+	} else {
 		if (abs(y) > abs(x)) {
 			if (y > 0) {
 				current_dir = UP;
-				} else {
+			} else {
 				current_dir = DOWN;
 			}
-			} else {
+		} else {
 			if (x > 0) {
 				current_dir = RIGHT;
-				} else {
+			} else {
 				current_dir = LEFT;
 			}
 		}
@@ -152,22 +148,6 @@ JOY_DIR HID_read_joystick_direction(){
 
 
 JOY_DIR HID_read_joystick_direction_change() {
-	
-	/*
-	curr = read_dir;
-	if prev == center:
-		if abs(curr.x) > utreshold || abs(curr.y) > utreshold:
-			prev = curr;
-			return curr;
-		else:
-			prev = prev;
-			return curr;
-	else:
-		if abs(y)<ltreshold && abs(x) < ltreshold:
-			return CENTER;
-		else:
-			return prev;
-	*/
 	int utreshold = 60;
 	int ltreshold = 10;
 	int16_t x = HID_read_joystick_axis(X_AXIS)-127;
@@ -175,21 +155,20 @@ JOY_DIR HID_read_joystick_direction_change() {
 	JOY_DIR current_dir = HID_read_joystick_direction();
 	if ( prev_dir == CENTER ) {
 		if (  abs(x) > utreshold || abs(y) > utreshold){
-			prev_dir=current_dir;
+			prev_dir = current_dir;
 			return current_dir;
-		} else{
+		} else {
 			return NOCHANGE;
 		}
 	}else{
-		if ( abs(x)< ltreshold && abs(y)< ltreshold ) {
-			prev_dir =CENTER;
+		if (abs(x) < ltreshold && abs(y) < ltreshold) {
+			prev_dir = CENTER;
 			return CENTER;
-		}else {
+		} else {
 			return NOCHANGE;
 		}
 	}
-	printf("failure!\n");
-	
+	printf("Failed!\n");
 	
 	if ((abs(x) < JOY_DIR_THRESH) && (abs(y) < JOY_DIR_THRESH)) {
 		current_dir = CENTER;
@@ -208,7 +187,7 @@ JOY_DIR HID_read_joystick_direction_change() {
 			}
 		}
 	}
-	if ((abs(x) > JOY_DIR_THRESH+80) || (abs(y) > JOY_DIR_THRESH+80)
+	if ((abs(x) > JOY_DIR_THRESH + 80) || (abs(y) > JOY_DIR_THRESH + 80)
 		&& !(current_dir == UP && prev_dir == DOWN)
 		&& !(current_dir == DOWN && prev_dir == UP)
 		&& !(current_dir == LEFT && prev_dir == RIGHT)
