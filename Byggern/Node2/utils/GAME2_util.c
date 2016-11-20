@@ -17,7 +17,7 @@
 #include "GAME2_util.h"
 
 volatile bool can_timeslot_free;
-volatile int16_t reference_motor_position = 0;
+int16_t reference_motor_position = 0;
 
 void GAME2_init(void) {
 	
@@ -35,33 +35,44 @@ void GAME2_init(void) {
 	sei();
 	
 	can_timeslot_free = true;
+	
+	MOT_init();
 }
 
 void GAME2_check_messages(void) {
 	if ( message_received){
 		//cli();
-		
 		switch(CAN_receive_buf.data[0]) {
-			case GAME_CONTROLS:
-			/*JOY_VALS * joystick_vals;
-			uint8_t slider;
-			uint8_t button
-			joystick_vals = CAN_receive_buf.data[1];
-			button = CAN_receive_buf.data[5];
-			slider = CAN_receive_buf.data[6];
-			
-			printf("Slider val: %d", slider);
-			slider = slider - 128;
-			message_received = false;
-			*/
+			case GAME_CONTROLS:{
+				JOY_VALS joystick_vals = *(JOY_VALS*)&CAN_receive_buf.data[1];
+				uint8_t button = CAN_receive_buf.data[5];
+				uint8_t slider = CAN_receive_buf.data[6];
+
+				// Set motor reference position
+				printf("Slider val: %d\n", slider);
+				GAME2_set_pos(~slider);
+				
+				// Set servo position
+				//PWM_set_duty();
+				
 			break;
-			
-			case GAME_RESTART:
+			}
+			case GAME_RESTART: {
+				
+			}
 			break;
+			default: {
+				
+			}
 			
 			//sei();
 		}
+		message_received = false;
 	}
+}
+
+void GAME2_set_pos(uint8_t position) {
+	reference_motor_position = position;
 }
 
 void GAME2_send_miss(void) {
@@ -109,35 +120,36 @@ void GAME2_check_sensors(void) {
 	adc_last = adc_curr;
 }
 
-#define Kp 1
-#define Ki 1
+#define Kp 1./30
+#define Ki 1./2000
+#define POS_SCALER 40
 
 void GAME2_update_regulator(void) {
 	static int16_t regulator_integrand = 0;
-	static int16_t motor_position = 0;
+	int16_t motor_position = 0;
 	const uint16_t time_constant_inv = 10;
 	
 	// Update motor position
-	int16_t position_difference = MOT_read_encoder();
-	motor_position += position_difference;
+	motor_position = MOT_read_encoder();
 	
 	// Calculate position error
-	int16_t pos_error = reference_motor_position - motor_position;
+	int16_t pos_error = (reference_motor_position * POS_SCALER) - motor_position;
 	
 	// Update I-term
 	regulator_integrand += pos_error * time_constant_inv;
 	
 	// Calculate motor output
-	int16_t output = (Kp * pos_error) + (Ki * regulator_integrand);
-	
+	int16_t output = (pos_error * Kp) + (Ki  * regulator_integrand);
+	output /8;
 	// Set motor output
-	MOT_set_speed(abs(output));
+	MOT_set_speed(abs(output) + 40);
+	
 	if (output > 0) {
-		MOT_set_direction(MOTOR_RIGHT);
-	} else {
 		MOT_set_direction(MOTOR_LEFT);
+	} else {
+		MOT_set_direction(MOTOR_RIGHT);
 	}
-	printf("Reg output: %d\n", output);
+	//printf("Reg output: %d\n", output);
 }
 
 // CAN bus flag // NEED more comment
