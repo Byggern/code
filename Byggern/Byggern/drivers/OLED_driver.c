@@ -126,7 +126,7 @@ void OLED_typewrite_string_P(const char* pgmptr) {
 		i += sizeof(char);
 		OLED_cursor_increment(8);
 		OLED_write_char('_');
-		_delay_ms(100);
+		_delay_ms(20);
 		OLED_draw();
 	}
 }
