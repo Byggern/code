@@ -17,12 +17,12 @@ const char calibratemenu[] PROGMEM = "Cal. Joystick\0";
 const char debugmenu[] PROGMEM = "Debug -> COM\0";
 const char wipemenu[] PROGMEM = "Wipe screen\0";
 const char gamemenu[] PROGMEM = "Pong!\0";
-const char motorcalibrate[] PROGMEM = "Calibrate board\0";
+const char motorcalibrate[] PROGMEM = "Cal. board\0";
 
 Menu menus[MENU_COUNT] = {
 	{.header = mainmenu,		.function = NULL,					.length=3},
 	{.header = utilsmenu,		.function = NULL,					.length=4},
-	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},
+	{.header = hellomenu,		.function = OLED_magic,				.length=0},
 	{.header = calibratemenu,	.function = HID_calibrate_joystick, .length=0},
 	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0},
 	{.header = wipemenu,		.function = OLED_lr_bar_clear,		.length=0},

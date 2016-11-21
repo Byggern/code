@@ -8,28 +8,26 @@
 #include "../Node2/drivers/ADC_driver.h"
 
 #define ADC_CONV_TIME 300
-
 uint16_t adc_tail = 0;
-uint16_t adc_high = 250;
-uint16_t adc_low  = 100;
+#define ADC_HIGH 250
+#define ADC_LOW 100
+#define FRONT_WEIGHT 0.5
 
 ADC_STATE ADC_current;
 
-float frontweight = 0.5;
-
 uint16_t ADC_smooth() {
-	adc_tail = adc_tail * (1 - frontweight) + ADC_read(CHANNEL_0) * frontweight;
+	adc_tail = adc_tail * (1 - FRONT_WEIGHT) + ADC_read(CHANNEL_0) * FRONT_WEIGHT;
 	return adc_tail;
 }
 
 ADC_STATE ADC_state() {
 	uint16_t val = ADC_smooth();
 	if (ADC_current == LOW) {
-		if (val > adc_high) {
+		if (val > ADC_HIGH) {
 			ADC_current = HIGH;
 		}
 	} else {
-		if (val < adc_low) {
+		if (val < ADC_HIGH) {
 			ADC_current = LOW;
 		}
 	}

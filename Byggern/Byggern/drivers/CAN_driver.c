@@ -160,17 +160,16 @@ ISR(INT4_vect){
 				break;
 			}
 			case RX0: {
-				CAN_receive_message(RXBnDLC+RXB0_OFFSET, &CAN_receive_buf);
+				CAN_receive_message(RXBnDLC+RXB0_OFFSET, (CAN_MESSAGE *)&CAN_receive_buf);
 				MCP_bit_modify(CANINTF, 0, 0);
 				break;
 			}
 			case RX1: {
-				CAN_receive_message(RXBnDLC+RXB1_OFFSET, &CAN_receive_buf);
+				CAN_receive_message(RXBnDLC+RXB1_OFFSET, (CAN_MESSAGE *)&CAN_receive_buf);
 				MCP_bit_modify(CANINTF, 1, 0);
 				break;
 			}
 			default: {
-				uint8_t iflg = MCP_read(CANINTF);
 				MCP_write(CANINTF, 0);
 			}
 		}

@@ -15,7 +15,7 @@
 
 volatile uint8_t MCP_read(uint8_t address) {
 	SPI_slave_select();
-	SPI_send(0b00000011); // Read instruction
+	SPI_send(0b00000011); // read instruction
 	SPI_send(address);
 	uint8_t read_val = SPI_receive();
 	SPI_slave_deselect();
@@ -23,7 +23,7 @@ volatile uint8_t MCP_read(uint8_t address) {
 }
 
 uint8_t MCP_read_selected(uint8_t address) {
-	SPI_send(0b00000011); // Read instruction
+	SPI_send(0b00000011); // read instruction
 	SPI_send(address);
 	uint8_t read_val = SPI_receive();
 	return read_val;
@@ -31,14 +31,14 @@ uint8_t MCP_read_selected(uint8_t address) {
 
 uint8_t MCP_read_buffer(uint8_t buffer) {
 	SPI_slave_select();
-	SPI_send(0b1001 | (buffer<1)); // Read instruction
+	SPI_send(0b1001 | (buffer<1)); // read instruction
 	uint8_t read_val = SPI_receive();
 	return read_val;
 }
 
 void MCP_write(uint8_t address, uint8_t byte) {
 	SPI_slave_select();
-	SPI_send(0b00000010); // Write instruction
+	SPI_send(0b00000010); // write instruction
 	SPI_send(address);
 	SPI_send(byte);
 	SPI_slave_deselect();
@@ -61,7 +61,7 @@ uint8_t MCP_read_status(void) {
 
 void MCP_bit_modify(uint8_t reg, uint8_t bit, uint8_t val) {
 	SPI_slave_select();
-	SPI_send(0b00000101); // Bit modify instruction
+	SPI_send(0b00000101); // bit modify instruction
 	SPI_send(reg);
 	SPI_send(1 << bit);
 	SPI_send(val << bit);
@@ -70,7 +70,7 @@ void MCP_bit_modify(uint8_t reg, uint8_t bit, uint8_t val) {
 
 void MCP_reset(void) {
 	SPI_slave_select();
-	SPI_send(0b11000000); // Reset instruction
+	SPI_send(0b11000000); // reset instruction
 	SPI_slave_deselect();
 }
 

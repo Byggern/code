@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #define F_CPU 4912000UL
 #include <util/delay.h>
 #include <math.h>

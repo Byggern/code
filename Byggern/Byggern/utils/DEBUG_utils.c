@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <avr/pgmspace.h>
 #define F_CPU 4912000UL
-#include <avr/delay.h>
+#include <util/delay.h>
 
 #include "../macros.h"
 #include "../drivers/UART_driver.h"

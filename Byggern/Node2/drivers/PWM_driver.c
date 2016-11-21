@@ -6,8 +6,6 @@
 
 void PWM1_start(void) {
 	// waveform generation mode: fast PWM
-	uint8_t wgm1 = 0b1110;
-	
 	TCCR3A |= ((1 << WGM31) | (1 << COM3A1));
 	TCCR3B |= ((1 << WGM33) | (1 << WGM32));
 	TCCR3B |= (0b010 << CS30);

@@ -45,18 +45,18 @@ void GAME_send_controls(void) {
 }
 
 uint8_t GAME_check_miss(void) {
-	if ( message_received){
-		
+	if(message_received) {
 		switch(CAN_receive_buf.data[0]) {
-			
 			case GAME_MISS:
-			message_received = false;
-			return 1;
-			
+				message_received = false;
+				return 1;
+		
 			default:
-			message_received = false;
-			return 0;
+				message_received = false;
+				return 0;
 		}
+	} else {
+		return 0;
 	}
 }
 

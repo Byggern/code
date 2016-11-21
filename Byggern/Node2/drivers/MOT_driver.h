@@ -1,16 +1,7 @@
-/*
- * MOT_driver.h
- *
- * Created: 18.11.2016 22:00:59
- *  Author: torjehoa
- */ 
-
-
 #ifndef MOT_DRIVER_H_
 #define MOT_DRIVER_H_
 
 #include <avr/io.h>
-
 
 #define MJ1 PORTH
 #define MJ1_DIR DDRH
@@ -27,9 +18,13 @@
 typedef enum {
 	MOTOR_RIGHT = 0,
 	MOTOR_LEFT = 1
-	} MOTOR_DIR;
+} MOTOR_DIR;
 
 void MOT_init(void);
+
+void MOT_enable(void);
+
+void MOT_disable(void);
 
 int16_t MOT_read_encoder(void);
 
@@ -37,8 +32,6 @@ void MOT_set_direction(MOTOR_DIR dir);
 
 void MOT_set_speed(uint8_t speed);
 
-void MOT_enable(void);
-
-void MOT_disable(void);
+void MOT_reset_encoder(void);
 
 #endif /* MOT_DRIVER_H_ */

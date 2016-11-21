@@ -1,10 +1,6 @@
-/*
-* GAME_util.c
-*
-* Created: 20/11/2016 21:13:46
-*  Author: Magne
-*/
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -14,7 +10,9 @@
 #include "../../Byggern/drivers/CAN_driver.h"
 #include "../../Byggern/drivers/HID_driver.h"
 #include "../drivers/ADC_driver.h"
+#include "../drivers/PWM_driver.h"
 #include "../drivers/MOT_driver.h"
+#include "../drivers/SOL_driver.h"
 
 #include "GAME2_util.h"
 
@@ -48,11 +46,11 @@ void GAME2_init(void) {
 }
 
 void GAME2_check_messages(void) {
-	if ( message_received){
+	if (message_received) {
 
 		switch(CAN_receive_buf.data[0]) {
 			
-			case GAME_CONTROLS:{
+			case GAME_CONTROLS: {
 				JOY_VALS joystick_vals = *(JOY_VALS*)&CAN_receive_buf.data[1];
 				uint8_t button = (volatile uint8_t)CAN_receive_buf.data[5];
 				uint8_t slider = (volatile uint8_t)CAN_receive_buf.data[6];
@@ -76,7 +74,7 @@ void GAME2_check_messages(void) {
 				MOT_enable();
 				break;
 			}
-			case GAME_STOP:{
+			case GAME_STOP: {
 				MOT_disable();
 				break;
 			}
@@ -140,7 +138,7 @@ void GAME2_check_sensors(void) {
 	if (should_send && can_timeslot_free) {
 		should_send = false;
 		GAME2_send_miss();
-		printf("Sending miss");
+		printf("Sending miss\n");
 	}
 	adc_last = adc_curr;
 }
@@ -160,27 +158,22 @@ void GAME2_update_regulator(void) {
 	
 	// Calculate motor output
 	int16_t output = (pos_error * Kp) + (Ki  * regulator_integrand);
-	output /8;
-	// Set motor output
-	MOT_set_speed(abs(output) + 40);
 	
+	// Set motor output
 	if (output > 0) {
 		MOT_set_direction(MOTOR_LEFT);
-		} else {
+	} else {
 		MOT_set_direction(MOTOR_RIGHT);
 	}
-	//printf("Reg output: %d\n", output);
+	MOT_set_speed(abs(output) + 40);
 }
 
-// CAN bus flag // NEED more comment
+// CAN bus flag
 ISR(TIMER4_COMPA_vect) {
-	
 	// Turn timer off
 	TCCR4B  &= ~(0b111 << CS40);
 	// Free CAN bus
 	can_timeslot_free = true;
 	// Clear interrupt flag
 	TIFR4 &= ~(1 << OCF4A);
-	
-
 }

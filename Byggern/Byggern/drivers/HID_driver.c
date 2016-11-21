@@ -38,7 +38,6 @@ int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t 
 	return (input - input_min) * (output_max - output_min) / (input_max - input_min) + output_min;
 }
 
-
 uint8_t HID_read_joystick_axis(JOY_AXIS axis) {
 	uint8_t adc_val = ADC_read_blocking(axis);
 	uint8_t current_joy_val;
@@ -210,14 +209,15 @@ uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 			} else {
 				return 0;
 			}
-        case RIGHT_BUTTON:
+        case RIGHT_BUTTON: 
             if (PINB & (1 << PB3)) {
 	            return 1;
 	        } else {
 	            return 0;
             }
+		default:
+			return 0;
     }
-	return 0;
 }
 
 uint8_t HID_read_joy_button(void) {

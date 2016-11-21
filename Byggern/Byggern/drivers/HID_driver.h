@@ -7,7 +7,7 @@ typedef enum {
 } JOY_AXIS;
 
 typedef enum {
-	LEFT_SLIDER = 2, // number corresponds to adc channel 
+	LEFT_SLIDER = 2, // number corresponds to ADC channel 
 	RIGHT_SLIDER,
 	LEFT_BUTTON,
 	RIGHT_BUTTON
@@ -35,7 +35,7 @@ typedef enum {
 	UP,
 	DOWN,
 	CENTER,
-	NOCHANGE //Torje: hacky stuff;
+	NOCHANGE
 } JOY_DIR;
 
 void HID_init(void);

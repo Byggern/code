@@ -21,6 +21,8 @@ void GAME2_check_messages(void);
 
 void GAME2_check_sensors(void);
 
+void GAME2_set_pos(uint8_t position);
+
 void GAME2_send_miss(void);
 
 void GAME2_update_regulator(void);
