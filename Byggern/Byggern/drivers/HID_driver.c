@@ -15,11 +15,16 @@
 
 JOY_CALIBRATE joystick_calibration_values;
 
+void HID_init(void) {
+	HID_calibrate_joystick();
+	clear_bit(DDRB, PB1);
+	clear_bit(DDRB, PB3);
+}
+
 int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t output_min, int16_t output_max) {
 	return (input - input_min) * (output_max - output_min) / (input_max - input_min) + output_min;
 }
 
-/* Joystick and Button Functions */
 uint8_t HID_read_joystick_axis(JOY_AXIS axis) {
 	uint8_t adc_val = ADC_read_blocking(axis);
 	uint8_t current_joy_val;
@@ -122,6 +127,7 @@ JOY_VALS HID_read_joystick() {
 	return joystick_values;
 }
 
+
 JOY_DIR prev_dir = CENTER;
 
 JOY_DIR HID_read_joystick_direction() {
@@ -179,20 +185,18 @@ uint8_t HID_read_slider(TOUCH_DEVICE device) {
 
 uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 	if (device != LEFT_BUTTON && device != RIGHT_BUTTON) {
-		printf("read_touch_button called with invalid device");
+		//printf("read_touch_button called with invalid device");
 		return 0;
 	}
     switch(device) {
         case LEFT_BUTTON:
-            clear_bit(DDRD, PD2);
-            if (PIND & (1 << PD2)) {
+            if (PINB & (1 << PB1)) {
 				return 1;
 			} else {
 				return 0;
 			}
         case RIGHT_BUTTON:
-            clear_bit(DDRD, PD3);
-            if (PIND & (1 << PD3)) {
+            if (PINB & (1 << PB3)) {
 	            return 1;
 	        } else {
 	            return 0;

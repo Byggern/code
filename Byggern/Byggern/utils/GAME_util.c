@@ -40,15 +40,18 @@ void GAME_send_controls(void) {
 	CAN_send_message(1, &game_msg);
 }
 
-void GAME_check_messages(void) {
+uint8_t GAME_check_messages(void) {
 	if ( message_received){
 		//cli();
 		
 		switch(CAN_receive_buf.data[0]) {
 			case GAME_MISS:
-
-			break;
-			
+				message_received = false;
+				return 1;
+				break;
+			default:
+				message_received = false;
+				return 0;
 			//sei();
 		}
 	}
@@ -62,4 +65,15 @@ void GAME_restart(void) {
 	game_msg.data = message_buf;
 	
 	CAN_send_message(1, &game_msg);
+}
+
+void GAME_func(void){
+	uint8_t health = 5;
+	while( health > 0){
+		if ( GAME_check_messages()){
+			health--;
+			printf("%d\n",health);
+		}
+		GAME_send_controls();
+	}
 }

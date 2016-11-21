@@ -19,6 +19,7 @@ void GAME_send_controls(void);
 
 void GAME_restart(void);
 
-void GAME_check_messages(void);
+uint8_t GAME_check_messages(void);
 
+void GAME_func(void);
 #endif /* GAME_UTIL_H_ */

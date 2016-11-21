@@ -14,7 +14,11 @@ void UART0_init(uint32_t clock, uint32_t baud){
 	uint32_t ubrr = (clock /(16 * baud)) - 1; // UART baud rate register
 	UBRR0H = (unsigned char) (ubrr >> 8);
 	UBRR0L = (unsigned char) (ubrr);
+	
+	#if defined(__AVR_ATmega2560)
 	PRR0 &= ~(1 << PRUSART0);
+	#endif
+	
 	UCSR0B = (1 << RXEN0) | (1 << TXEN0); // set RX-enable and TX-enable bits
 	UCSR0C = (SEL_BIT_VAL << 7) | (0b11 << UCSZ00) | (0b00 << UPM00) | (1 << USBS0); // ( UCSR0C register enable ) | ( 8-bit character size ) | ( disable parity ) | ( 2 stop bits )
 

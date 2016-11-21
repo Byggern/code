@@ -3,6 +3,7 @@
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <stdio.h>
+
 #if defined(__AVR_ATmega162__)
 #define F_CPU 4912000UL
 
@@ -10,30 +11,16 @@
 #define F_CPU 16000000L
 #endif
 #include <util/delay.h>
+
 #include "CAN_driver.h"
 #include "MCP2515_driver.h"
-uint8_t test_data = 0b10100101;
 
-const char canerror[] PROGMEM = "CAN interrupt due to error\n";
-const char candefault[] PROGMEM = "CAN interrupt due to unhandled case\n";
-const char canwake[] PROGMEM = "CAN interrupt due to being woken\n";
-const char cannoint[] PROGMEM = "CAN interrupt with no IFLG code: %x\n";
-const char cantrans[] PROGMEM = "CAN interrupt due to transmission\n";
-const char canthise[] PROGMEM = "This is EFLG and CANINTF: ";
-const char canthisu[] PROGMEM = "This is INTF and ICOD: ";
 const char can_send_timeout_msg[] PROGMEM = "CAN send timeout\n";
+const char can_init_end[] PROGMEM = "CAN initialized.\n";
 
 bool message_received = false;
 uint8_t intr_recv_buf[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-volatile CAN_MESSAGE CAN_receive_buf;//={.data=intr_recv_buf};
-
-CAN_MESSAGE test_message = {
-	.id = 0,
-	.length = 1,
-	.data = &test_data
-};
-
-const char can_init_end[] PROGMEM = "can init end\n";
+volatile CAN_MESSAGE CAN_receive_buf;
 
 void CAN_init(uint8_t id, uint8_t loopback ) {
 	CAN_receive_buf.data = intr_recv_buf;
@@ -41,7 +28,6 @@ void CAN_init(uint8_t id, uint8_t loopback ) {
 	MCP_init();
 	
 	//enable interrupts
-	// Set interrupt pin as output
 	INTERRUPT_DIR_PORT &= ~(1 << INTERRUPT_PIN);
 	
 #if defined(__AVR_ATmega162__)
@@ -151,20 +137,10 @@ ISR(INT4_vect){
 		uint8_t icod = (MCP_read(CANSTAT) & 0b1110)>>1;
 		switch(icod) {
 			case NOINT: {
-				//printf_P(cannoint, MCP_read(CANINTF));
 				MCP_write(CANINTF, 0);
-				// Set interrupt flag to clear it, just to be sure
-				#if defined(__AVR_ATmega162__)
-				GIFR |= (1 << INTF2);
-				#endif
 				return;
 			}
 			case ERROR: {
-				//printf_P(canerror);
-				uint8_t eflg = MCP_read(EFLG);
-				uint8_t iflg = MCP_read(CANINTF);
-				//printf_P(canthise);
-				//printf("%x, %x\n", eflg, iflg);
 				MCP_bit_modify(CANINTF, 5, 0);
 				MCP_bit_modify(CANINTF, 7, 0);
 				MCP_write(CANINTF,0);
@@ -172,7 +148,6 @@ ISR(INT4_vect){
 				break;
 			}
 			case WAKEUP: {
-				//printf_P(canwake);
 				MCP_bit_modify(CANINTF, 6, 0);
 				break;
 			}

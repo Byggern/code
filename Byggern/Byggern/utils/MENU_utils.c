@@ -8,6 +8,7 @@
 #include "../drivers/OLED_driver.h"
 #include "../utils/OLED_utils.h"
 #include "DEBUG_utils.h"
+#include "GAME_util.h"
 
 const char mainmenu[] PROGMEM = "Main Menu\0";
 const char utilsmenu[] PROGMEM = "Utilities\0";
@@ -15,19 +16,22 @@ const char hellomenu[] PROGMEM = "Test function\0";
 const char calibratemenu[] PROGMEM = "Calibrate Joystick\0";
 const char debugmenu[] PROGMEM = "Show debug output\0";
 const char wipemenu[] PROGMEM = "Wipe screen\0";
+const char gamemenu[] PROGMEM = "Pong!\0";
 
 Menu menus[MENU_COUNT] = {
-	{.header = mainmenu,		.function = NULL,					.length=2},
+	{.header = mainmenu,		.function = NULL,					.length=3},
 	{.header = utilsmenu,		.function = NULL,					.length=3},
 	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},
 	{.header = calibratemenu,	.function = HID_calibrate_joystick, .length=0},
 	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0},
-	{.header = wipemenu,		.function = OLED_lr_bar_clear,		.length=0}
+	{.header = wipemenu,		.function = OLED_lr_bar_clear,		.length=0},
+	{.header =  gamemenu,		.function = GAME_func,				.length=0}	
 };
 
 void MENU_link_menus(void) {
-	menus[0].submenus[0] = &menus[1];
-	menus[0].submenus[1] = &menus[2];
+	menus[0].submenus[0] = &menus[6];
+	menus[0].submenus[1] = &menus[1];
+	menus[0].submenus[2] = &menus[2];
 	menus[1].submenus[0] = &menus[3];
 	menus[1].submenus[1] = &menus[4];
 	menus[1].submenus[2] = &menus[5];

@@ -19,6 +19,8 @@ void PWM1_start(void);
 
 void PWM_set_duty(uint8_t duty);
 
+void PWM_set_joystick(int16_t duty);
+
 void PWM_stop(void);
 
 #endif /* PWM_DRIVER_H_ */

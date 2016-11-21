@@ -38,6 +38,8 @@ typedef enum {
 	NOCHANGE //Torje: hacky stuff;
 } JOY_DIR;
 
+void HID_init(void);
+
 uint8_t HID_read_joystick_axis(JOY_AXIS axis);
 
 void HID_calibrate_joystick(void);

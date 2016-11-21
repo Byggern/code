@@ -10,12 +10,12 @@
 #define ADC_CONV_TIME 300
 
 uint16_t adc_tail = 0;
-uint16_t adc_high = 200;
-uint16_t adc_low  = 50;
+uint16_t adc_high = 250;
+uint16_t adc_low  = 100;
 
 ADC_STATE ADC_current;
 
-float frontweight = 0.2;
+float frontweight = 0.5;
 
 uint16_t ADC_smooth() {
 	adc_tail = adc_tail * (1 - frontweight) + ADC_read(CHANNEL_0) * frontweight;

@@ -41,21 +41,29 @@ void GAME2_init(void) {
 
 void GAME2_check_messages(void) {
 	if ( message_received){
-		//cli();
+
 		switch(CAN_receive_buf.data[0]) {
+			
 			case GAME_CONTROLS:{
 				JOY_VALS joystick_vals = *(JOY_VALS*)&CAN_receive_buf.data[1];
-				uint8_t button = CAN_receive_buf.data[5];
-				uint8_t slider = CAN_receive_buf.data[6];
+				uint8_t button = (volatile uint8_t)CAN_receive_buf.data[5];
+				uint8_t slider = (volatile uint8_t)CAN_receive_buf.data[6];
+				//printf("Joy: %d ", joystick_vals.x_axis);
+				//printf("Button state: %d  ",button);
+				//printf("Slider val: %d\n", slider);
 
 				// Set motor reference position
-				printf("Slider val: %d\n", slider);
 				GAME2_set_pos(~slider);
 				
-				// Set servo position
-				//PWM_set_duty();
+				// Possibly fire solenoid
+				if (button) {
+					SOL_fire();
+				}
 				
-			break;
+				// Set servo position
+				PWM_set_duty((-joystick_vals.x_axis / 2) + 50);
+				
+				break;
 			}
 			case GAME_RESTART: {
 				
@@ -65,7 +73,6 @@ void GAME2_check_messages(void) {
 				
 			}
 			
-			//sei();
 		}
 		message_received = false;
 	}
@@ -109,8 +116,8 @@ void GAME2_check_sensors(void) {
 	
 	
 	ADC_STATE adc_curr = ADC_state();
-	if (adc_curr && adc_curr != adc_last) {
-		should_send = true;	
+	if (adc_curr == LOW && adc_curr != adc_last) {
+		should_send = true;
 	}
 	if (should_send && can_timeslot_free) {
 		should_send = false;
@@ -146,7 +153,7 @@ void GAME2_update_regulator(void) {
 	
 	if (output > 0) {
 		MOT_set_direction(MOTOR_LEFT);
-	} else {
+		} else {
 		MOT_set_direction(MOTOR_RIGHT);
 	}
 	//printf("Reg output: %d\n", output);

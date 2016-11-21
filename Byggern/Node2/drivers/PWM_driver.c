@@ -17,7 +17,7 @@ void PWM1_start(void) {
 	// set top value
 	ICR3 = PWM_TOP_VAL;
 	OCR3A = PWM_DUTY_MID;
-}
+} 
 
 void PWM_set_duty(uint8_t duty) {
 	// convert from PWM duty cycle percentage to timer ticks
@@ -29,6 +29,10 @@ void PWM_set_duty(uint8_t duty) {
 		duty_ticks = 4200;
 	}
 	OCR3A = duty_ticks;
+}
+
+void PWM_set_joystick(int16_t duty) {
+	PWM_set_duty((-duty / 2) + 50);
 }
 
 void PWM_stop(void) {

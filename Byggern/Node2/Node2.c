@@ -42,14 +42,10 @@ int main(void) {
 	
 	while(1)
 	{
-		//CAN_send_message(0, &loop_message);
-		//_delay_ms(500);
 		
-		// Check messages
 		GAME2_check_messages();
 		
-		// Check sensors
-		//GAME2_check_sensors();
+		GAME2_check_sensors();
 		
 		GAME2_update_regulator();
 		
