@@ -4,8 +4,8 @@
 #include "../drivers/OLED_driver.h"
 
 const char byggern[] PROGMEM = "BYGGERN\0";
-
 const char copy[] PROGMEM = "(C) Gruppe 27, 2016\0";
+const char year[] PROGMEM = "2016\0";
 
 void OLED_lr_bar(uint8_t x) {
 	OLED_write_line_state(x, 0, x + 1, 64, 1);
@@ -43,5 +43,6 @@ void OLED_magic(void) {
 	OLED_typewrite_string_P(byggern);
 	OLED_set_cursor(4, 10);
 	OLED_typewrite_string_P(copy);
-	OLED_draw();
+	OLED_set_cursor(5, 50);
+	OLED_typewrite_string_P(year);
 }
