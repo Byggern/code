@@ -129,6 +129,8 @@ void OLED_typewrite_string_P(const char* pgmptr) {
 		_delay_ms(20);
 		OLED_draw();
 	}
+	OLED_write_char(' ');
+	OLED_draw();
 }
 
 void OLED_write_pixel(uint8_t x, uint8_t y, uint8_t state) {

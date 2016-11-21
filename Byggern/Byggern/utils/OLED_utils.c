@@ -4,7 +4,7 @@
 #include "../drivers/OLED_driver.h"
 
 const char byggern[] PROGMEM = "BYGGERN\0";
-const char copy[] PROGMEM = "(C) Gruppe 27, 2016\0";
+const char copy[] PROGMEM = "(C) Gruppe 27\0";
 const char year[] PROGMEM = "2016\0";
 
 void OLED_lr_bar(uint8_t x) {
