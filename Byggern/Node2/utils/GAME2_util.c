@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#define F_CPU 16000000
+#include <util/delay.h>
 #include "../../Byggern/utils/GAME_util.h"
 #include "../../Byggern/drivers/CAN_driver.h"
 #include "../../Byggern/drivers/HID_driver.h"
@@ -17,6 +19,12 @@
 #include "GAME2_util.h"
 
 volatile bool can_timeslot_free;
+
+
+#define Kp 1./30
+#define Ki 1./2000
+#define POS_SCALER 40
+static int16_t regulator_integrand = 0;
 int16_t reference_motor_position = 0;
 
 void GAME2_init(void) {
@@ -48,9 +56,6 @@ void GAME2_check_messages(void) {
 				JOY_VALS joystick_vals = *(JOY_VALS*)&CAN_receive_buf.data[1];
 				uint8_t button = (volatile uint8_t)CAN_receive_buf.data[5];
 				uint8_t slider = (volatile uint8_t)CAN_receive_buf.data[6];
-				//printf("Joy: %d ", joystick_vals.x_axis);
-				//printf("Button state: %d  ",button);
-				//printf("Slider val: %d\n", slider);
 
 				// Set motor reference position
 				GAME2_set_pos(~slider);
@@ -66,9 +71,26 @@ void GAME2_check_messages(void) {
 				break;
 			}
 			case GAME_RESTART: {
-				
+				regulator_integrand = 0;
+				reference_motor_position = MOT_read_encoder();
+				MOT_enable();
+				break;
 			}
-			break;
+			case GAME_STOP:{
+				MOT_disable();
+				break;
+			}
+			case GAME_CALIBRATE_BOARD:
+				MOT_enable();
+				MOT_set_direction(MOTOR_RIGHT);
+				MOT_set_speed(100);
+				_delay_ms(1000);
+				MOT_set_speed(0);
+				MOT_reset_encoder();
+				regulator_integrand = 0;
+				reference_motor_position = MOT_read_encoder();
+				MOT_disable();
+				break;
 			default: {
 				
 			}
@@ -104,10 +126,6 @@ void GAME2_send_miss(void) {
 	TCCR4B |= (0b010 << CS40);
 }
 
-
-//uint16_t adc_min = 1024;
-//uint16_t adc_max = 0x0;
-
 void GAME2_check_sensors(void) {
 	
 	// Check IR sensor
@@ -127,12 +145,7 @@ void GAME2_check_sensors(void) {
 	adc_last = adc_curr;
 }
 
-#define Kp 1./30
-#define Ki 1./2000
-#define POS_SCALER 40
-
 void GAME2_update_regulator(void) {
-	static int16_t regulator_integrand = 0;
 	int16_t motor_position = 0;
 	const uint16_t time_constant_inv = 10;
 	

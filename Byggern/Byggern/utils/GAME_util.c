@@ -6,11 +6,13 @@
 */
 #include <stdint.h>
 #include <avr/io.h>
+#include <avr/pgmspace.h>
+#define F_CPU 4912000UL
+#include <util/delay.h>
 #include "../drivers/HID_driver.h"
 #include "../drivers/CAN_driver.h"
 #include "../drivers/OLED_driver.h"
 #include "../utils/OLED_utils.h"
-#include "avr/pgmspace.h"
 #include "GAME_util.h"
 
 uint8_t message_buf[8]={};
@@ -33,7 +35,7 @@ void GAME_send_controls(void) {
 	// Collect values
 	*joy_ptr    = HID_read_joystick();
 	*button_ptr = HID_read_touch_button(LEFT_BUTTON);
-	*slider_ptr = HID_read_slider(LEFT_SLIDER);
+	*slider_ptr = HID_read_slider(RIGHT_SLIDER);
 	// Link game_msg to message_buf
 	game_msg.length = 7;
 	game_msg.data = message_buf;
@@ -65,49 +67,63 @@ const char hearts[] PROGMEM = "<3";
 const char game[] PROGMEM = "GAME";
 const char over[] PROGMEM = "OVER";
 
-void GAME_func(void){
-	uint8_t health = 5;
-	OLED_lr_bar_clear();
+void GAME_draw_status(uint8_t health, uint16_t time_alive) {
 	OLED_clear_screen();
+	OLED_set_cursor(0,0);
+	OLED_write_string_P(lives_left);
 	
-	OLED_set_cursor(1,0);
+	OLED_set_cursor(3,3*8);
 	for( uint8_t i = 0 ; i < health;i++){
 		OLED_write_string_P(hearts);
 		OLED_draw();
 	}
-	http://documentiation.url.here
+}
+
+void GAME_func(void){
+	GAME_restart();
+	uint8_t health = 5;
+	OLED_lr_bar_clear();
+	OLED_clear_screen();
+	GAME_draw_status(health, 0);
 	while( health > 0){
-		
 		if ( GAME_check_miss()){
 			health--;
-			
-			OLED_clear_screen();
-			
-			OLED_set_cursor(0,0);
-			OLED_write_string_P(lives_left);
-			
-			OLED_set_cursor(1,8);
-			for( uint8_t i = 0 ; i < health;i++){
-					OLED_write_string_P(hearts);
-					OLED_draw();
-			}
+			GAME_draw_status(health, 0);
 		}
 		
 		GAME_send_controls();
 	}
-	OLED_clear_screen();
-	OLED_set_cursor(3,4);
-	OLED_typewrite_string_P(game);
-	OLED_set_cursor(4,4);
-	OLED_typewrite_string_P(over);
+	for ( uint8_t i = 0 ; i < 10 ; i++ ){
+		OLED_clear_screen();
+		OLED_set_cursor(3,6*8);
+		OLED_typewrite_string_P(game);
+		OLED_set_cursor(4,6*8);
+		OLED_typewrite_string_P(over);
+		_delay_ms(200);
+		OLED_clear_screen();
+		_delay_ms(200);
+	}
 }
 
-void GAME_restart(void) {
 
-	message_buf[0] = GAME_RESTART;
+void GAME_stop(void){
+	message_buf[0]=GAME_STOP;
+	game_msg.length=1;
+	game_msg.id = 0;
+	CAN_send_message(0,&game_msg);
+}
 
-	game_msg.length = 1;
-	game_msg.data = message_buf;
+void GAME_restart(void){
+	message_buf[0]=GAME_RESTART;
+	game_msg.length=1;
+	game_msg.id = 0;
+	CAN_send_message(0,&game_msg);
+}
 
-	CAN_send_message(1, &game_msg);
+void GAME_calibrate_board(void){
+	message_buf[0]=GAME_CALIBRATE_BOARD;
+	game_msg.length=1;
+	game_msg.id = 0;
+	CAN_send_message(0,&game_msg);
+	_delay_ms(1000);
 }

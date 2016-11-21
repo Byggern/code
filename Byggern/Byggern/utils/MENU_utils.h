@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MENU_COUNT 7
+#define MENU_COUNT 8
 
 typedef struct Menu_t {
 	const char* header;

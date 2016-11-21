@@ -10,6 +10,16 @@
 #include "TWI_driver.h"
 #include "MOT_driver.h"
 
+void MOT_enable(){
+	// Motor enable
+	MJ1 |= (1 << MOT_EN);
+}
+
+void MOT_disable(){
+	// Motor enable
+	MJ1 &= ~(1 << MOT_EN);
+}
+
 void MOT_init(void){
 	// Encoder data port to input
 	MJ2_DIR = 0x0;
@@ -24,9 +34,7 @@ void MOT_init(void){
 	
 	// Motor control pins to output
 	MJ1_DIR |= (1 << MOT_DIR) | (1 << MOT_EN);
-	// Motor enable
-	MJ1 |= (1 << MOT_EN);
-	
+	MOT_enable();
 	MOT_set_direction(MOTOR_LEFT);
 	MOT_set_speed(0);
 }
@@ -58,9 +66,9 @@ int16_t MOT_read_encoder(void) {
 void MOT_set_direction(MOTOR_DIR dir){
 	if (dir == MOTOR_RIGHT) {
 		MJ1 |= (1 << MOT_DIR);
-	} else if (dir == MOTOR_LEFT) {
+		} else if (dir == MOTOR_LEFT) {
 		MJ1 &= ~(1 << MOT_DIR);
-	} else {
+		} else {
 		printf("Motor direction invalid\n");
 	}
 }
@@ -74,4 +82,11 @@ void MOT_set_speed(uint8_t speed){
 	// DAC speed byte
 	motor_msg[2] = speed;
 	TWI_write(motor_msg, 3);
+}
+
+void MOT_reset_encoder(void){
+	// Reset encoder
+	MJ1 &= ~(1 << ENC_RST_INV);
+	//_delay_us(20);
+	MJ1 |= (1 << ENC_RST_INV);
 }

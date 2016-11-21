@@ -17,15 +17,17 @@ const char calibratemenu[] PROGMEM = "Cal. Joystick\0";
 const char debugmenu[] PROGMEM = "Debug -> COM\0";
 const char wipemenu[] PROGMEM = "Wipe screen\0";
 const char gamemenu[] PROGMEM = "Pong!\0";
+const char motorcalibrate[] PROGMEM = "Calibrate board\0";
 
 Menu menus[MENU_COUNT] = {
 	{.header = mainmenu,		.function = NULL,					.length=3},
-	{.header = utilsmenu,		.function = NULL,					.length=3},
+	{.header = utilsmenu,		.function = NULL,					.length=4},
 	{.header = hellomenu,		.function = DEBUG_OLED_hello,		.length=0},
 	{.header = calibratemenu,	.function = HID_calibrate_joystick, .length=0},
 	{.header = debugmenu,		.function = DEBUG_run_HID_debug,	.length=0},
 	{.header = wipemenu,		.function = OLED_lr_bar_clear,		.length=0},
-	{.header =  gamemenu,		.function = GAME_func,				.length=0}	
+	{.header =  gamemenu,		.function = GAME_func,				.length=0},
+	{.header = motorcalibrate,	.function = GAME_calibrate_board,	.length=0}
 };
 
 void MENU_link_menus(void) {
@@ -35,6 +37,7 @@ void MENU_link_menus(void) {
 	menus[1].submenus[0] = &menus[3];
 	menus[1].submenus[1] = &menus[4];
 	menus[1].submenus[2] = &menus[5];
+	menus[1].submenus[3] = &menus[7];
 }
 
 void MENU_init(void) {

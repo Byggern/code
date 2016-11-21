@@ -37,5 +37,8 @@ void MOT_set_direction(MOTOR_DIR dir);
 
 void MOT_set_speed(uint8_t speed);
 
+void MOT_enable(void);
+
+void MOT_disable(void);
 
 #endif /* MOT_DRIVER_H_ */

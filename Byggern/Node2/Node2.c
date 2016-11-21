@@ -49,6 +49,7 @@ int main(void) {
 		
 		GAME2_update_regulator();
 		
+		
 	}
 }
 
