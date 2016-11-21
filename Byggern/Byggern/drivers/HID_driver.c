@@ -4,6 +4,7 @@
 #include  "avr/io.h"
 #define F_CPU 4912000UL
 #include <util/delay.h>
+#include <avr/pgmspace.h>
 
 #include "../macros.h"
 #include "HID_driver.h"
@@ -13,13 +14,25 @@
 #define UTRESHOLD 60
 #define LTRESHOLD 10
 
+const char invalid_slider_device_msg[] PROGMEM = "read_slider called with invalid device\n";
+const char invalid_touch_device_msg[] PROGMEM = "read_touch_button called with invalid device\n";
+const char x_cal_failed_msg[] PROGMEM = "X axis calibration failed! (Offset+deadzone out of bounds)\n";
+const char y_cal_failed_msg[] PROGMEM = "Y axis calibration failed! (Offset+deadzone out of bounds)\n";
+const char joy_cal_msg[] PROGMEM = "Calibrating joystick...\n";
+const char joy_cal_failed_msg[] PROGMEM = "[!] Joystick calibration failed! Retrying.\n";
+const char joy_cal_success_msg[] PROGMEM = "Joystick calibrated.\n";
+const char x_offset_msg[] PROGMEM = "x offset: %d\n";
+const char x_deadzone_msg[] PROGMEM = "x deadzone: %d\n";
+const char y_offset_msg[] PROGMEM = "y offset: %d\n";
+const char y_deadzone_msg[] PROGMEM = "y deadzone: %d\n";
+
 JOY_CALIBRATE joystick_calibration_values;
 
 int16_t mapToRange(int16_t input, int16_t input_min, int16_t input_max, int16_t output_min, int16_t output_max) {
 	return (input - input_min) * (output_max - output_min) / (input_max - input_min) + output_min;
 }
 
-/* Joystick and Button Functions */
+/* joystick and button functions */
 uint8_t HID_read_joystick_axis(JOY_AXIS axis) {
 	uint8_t adc_val = ADC_read_blocking(axis);
 	uint8_t current_joy_val;
@@ -41,7 +54,7 @@ uint8_t HID_read_joystick_axis(JOY_AXIS axis) {
 }
 
 void HID_calibrate_joystick(void) {
-	printf("Calibrating joystick...\n");
+	printf_P(joy_cal_msg);
 	
 	joystick_calibration_values.x_axis_min = 0;
 	joystick_calibration_values.x_axis_max = 255;
@@ -57,18 +70,18 @@ void HID_calibrate_joystick(void) {
 	uint16_t y_offset_deadzone_sum = HID_joystick_zero(Y_AXIS);
 	
 	if (x_offset_deadzone_sum > 15) {
-		printf("X axis calibration failed! (Offset+deadzone out of bounds)\n");
+		printf_P(x_cal_failed_msg);
 	}
 	
 	if (y_offset_deadzone_sum > 15) {
-		printf("Y axis calibration failed! (Offset+deadzone out of bounds)\n");
+		printf_P(y_cal_failed_msg);
 	}
 	
 	if (x_offset_deadzone_sum > 15 || y_offset_deadzone_sum > 15) {
-		printf("[!] Joystick calibration failed! Retrying.\n");
+		printf_P(joy_cal_failed_msg);
 		HID_calibrate_joystick();
 	} else {
-		printf("Joystick calibrated.\n");
+		printf_P(joy_cal_success_msg);
 	}
 }
 
@@ -104,13 +117,13 @@ uint8_t HID_joystick_zero(JOY_AXIS axis) {
 	if (axis == X_AXIS) {
 		joystick_calibration_values.x_offset = offset;
 		joystick_calibration_values.x_deadzone = deadzone;
-		printf("x offset: %d\n", joystick_calibration_values.x_offset);
-		printf("x deadzone: %d\n", joystick_calibration_values.x_deadzone);
+		printf_P(x_offset_msg, joystick_calibration_values.x_offset);
+		printf_P(x_deadzone_msg, joystick_calibration_values.x_deadzone);
 	} else {
 		joystick_calibration_values.y_offset = offset;
 		joystick_calibration_values.y_deadzone = deadzone;
-		printf("y offset: %d\n", joystick_calibration_values.y_offset);
-		printf("y deadzone: %d\n", joystick_calibration_values.y_deadzone);
+		printf_P(y_offset_msg, joystick_calibration_values.y_offset);
+		printf_P(y_deadzone_msg, joystick_calibration_values.y_deadzone);
 	}
 	return abs(deadzone) + abs(offset);
 }
@@ -171,7 +184,7 @@ JOY_DIR HID_read_joystick_direction_change() {
 
 uint8_t HID_read_slider(TOUCH_DEVICE device) {
 	if (device != LEFT_SLIDER && device != RIGHT_SLIDER) {
-		printf("read_slider called with invalid device");
+		printf_P(invalid_slider_device_msg);
 		return 0;
 	}
 	return ADC_read_blocking(device);
@@ -179,7 +192,7 @@ uint8_t HID_read_slider(TOUCH_DEVICE device) {
 
 uint8_t HID_read_touch_button(TOUCH_DEVICE device) {
 	if (device != LEFT_BUTTON && device != RIGHT_BUTTON) {
-		printf("read_touch_button called with invalid device");
+		printf_P(invalid_touch_device_msg);
 		return 0;
 	}
     switch(device) {
