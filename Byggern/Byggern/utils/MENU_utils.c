@@ -12,9 +12,9 @@
 
 const char mainmenu[] PROGMEM = "Main Menu\0";
 const char utilsmenu[] PROGMEM = "Utilities\0";
-const char hellomenu[] PROGMEM = "Test function\0";
-const char calibratemenu[] PROGMEM = "Calibrate Joystick\0";
-const char debugmenu[] PROGMEM = "Show debug output\0";
+const char hellomenu[] PROGMEM = "Test func.\0";
+const char calibratemenu[] PROGMEM = "Cal. Joystick\0";
+const char debugmenu[] PROGMEM = "Debug -> COM\0";
 const char wipemenu[] PROGMEM = "Wipe screen\0";
 const char gamemenu[] PROGMEM = "Pong!\0";
 
