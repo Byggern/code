@@ -17,15 +17,12 @@ void OLED_lr_bar_clear(void) {
 	for (uint8_t x = 1; x < 127;x++) {
 		OLED_lr_bar(x);
 	}
-}
-
-void OLED_print_bitmap(void) {
-	
+	OLED_clear_screen();
 }
 
 void OLED_magic(void) {
 	for (uint8_t c = 0; c < 96; c++) {
-		OLED_clear_screen();
+		OLED_clear_screen(); 
 		OLED_draw();
 		OLED_set_cursor(0, 0);
 		for (uint8_t pos = 0; pos < 96; pos++) {
@@ -45,4 +42,6 @@ void OLED_magic(void) {
 	OLED_typewrite_string_P(copy);
 	OLED_set_cursor(5, 50);
 	OLED_typewrite_string_P(year);
+	_delay_ms(1000);
+	OLED_lr_bar_clear();
 }
