@@ -34,7 +34,7 @@ void OLED_magic(void) {
 			}
 			OLED_cursor_increment(8);
 		}
-		OLED_set_cursor(2, 32);
+		OLED_set_cursor(2, 40);
 		OLED_write_string_P(byggern);
 		OLED_draw();
 	}
