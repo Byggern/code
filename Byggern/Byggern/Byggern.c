@@ -20,9 +20,11 @@
 #include <avr/interrupt.h>
 #define UART0_BAUDRATE 9600
 
+const char sys_init_msg[] PROGMEM =  "\n\n";
+
 void SYS_init(void) {
 	UART0_init(F_CPU, UART0_BAUDRATE);
-	printf("\n\n");
+	printf_P(sys_init_msg);
 	EXTMEM_init();
 	ADC_init();
 	HID_init();
@@ -31,14 +33,10 @@ void SYS_init(void) {
 	CAN_init(0, 0);
 }
 
-int main(void)
-{
+int main(void) {
 	SYS_init();
 	
-	while(1)
-	{
-		
+	while(1) {	
 		MENU(menus);
-
 	}
 }

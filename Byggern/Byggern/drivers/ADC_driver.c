@@ -1,28 +1,36 @@
 #include "ADC_driver.h"
 
 #include "avr/io.h"
+#include <avr/pgmspace.h>
 
 #define F_CPU 4912000UL
 #include <util/delay.h>
 #include <stdio.h>
 #include "../macros.h"
 
+const char adc_init_msg[] PROGMEM =  "Initializing ADC...\n";
+const char adc_init_done_msg[] PROGMEM = "ADC initialized.\n";
+const char adc_init_fail_msg[] PROGMEM = "[!] ADC initialization failed!\n";
+const char adc_init_run_test_msg[] PROGMEM = "Running ADC test...\n";
+const char adc_test_pass_msg[] PROGMEM = "ADC test passed.\n";
+const char adc_test_fail_msg[] PROGMEM = "ADC test failed!\n";
+
 #define ADC_CONV_TIME 40
 
 volatile uint8_t* adc_address = (uint8_t*)0x1400;
 
 void ADC_init(void) {
-	printf("Initializing ADC...\n");
+	printf_P(adc_init_msg);
 	clear_bit(DDRD, PD5); // Setup a pin to read interrupt line from ADC
 	if (ADC_test() == 1) {
-		printf("ADC initialized.\n");
+		printf_P(adc_init_done_msg);
 	} else {
-		printf("[!] ADC initialization failed!\n");
+		printf_P(adc_init_fail_msg);
 	}
 }
 
 uint8_t ADC_test(void) {
-	printf("Running ADC test...\n");
+	printf_P(adc_init_run_test_msg);
 	uint16_t ADC_test_sum = 0;
 	uint8_t ADC_equal_last_sum = 0;
 	uint8_t ADC_current_value = 0;
@@ -39,12 +47,10 @@ uint8_t ADC_test(void) {
 	}
 	
 	if (ADC_equal_last_sum > 95 || ADC_test_sum < 5) {
-		/* fail the test */
-		printf("ADC test failed!\n");
+		printf_P(adc_test_fail_msg);
 		return 0;
 	} else {
-		/* pass the test */
-		printf("ADC test passed.\n");
+		printf_P(adc_test_pass_msg);
 		return 1;
 	}
 }
