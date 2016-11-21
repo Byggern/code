@@ -1,6 +1,6 @@
 #include <avr/io.h>
 
-void TWI_init(void){
+void TWI_init(void) {
 	// set TWI SCL frequency to 400 kHz
 	TWBR |= 0xFF;
 	TWSR |= (1 << TWPS1) | (1 << TWPS0);
