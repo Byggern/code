@@ -81,8 +81,8 @@ void GAME2_check_messages(void) {
 			case GAME_CALIBRATE_BOARD:
 				MOT_enable();
 				MOT_set_direction(MOTOR_RIGHT);
-				MOT_set_speed(100);
-				_delay_ms(1000);
+				MOT_set_speed(140);
+				_delay_ms(2000);
 				MOT_set_speed(0);
 				MOT_reset_encoder();
 				regulator_integrand = 0;
@@ -151,7 +151,7 @@ void GAME2_update_regulator(void) {
 	motor_position = MOT_read_encoder();
 	
 	// Calculate position error
-	int16_t pos_error = (reference_motor_position * POS_SCALER) - motor_position;
+	int16_t pos_error = (reference_motor_position * POS_SCALER - 3000) - motor_position;
 	
 	// Update I-term
 	regulator_integrand += pos_error * time_constant_inv;

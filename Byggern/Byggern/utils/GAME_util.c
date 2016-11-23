@@ -69,10 +69,10 @@ const char over[] PROGMEM = "OVER";
 
 void GAME_draw_status(uint8_t health, uint16_t time_alive) {
 	OLED_clear_screen();
-	OLED_set_cursor(0,0);
+	OLED_set_cursor(0,2*8);
 	OLED_write_string_P(lives_left);
 	
-	OLED_set_cursor(3,3*8);
+	OLED_set_cursor(3,1*8);
 	for( uint8_t i = 0 ; i < health;i++){
 		OLED_write_string_P(hearts);
 		OLED_draw();
@@ -81,7 +81,7 @@ void GAME_draw_status(uint8_t health, uint16_t time_alive) {
 
 void GAME_func(void){
 	GAME_restart();
-	uint8_t health = 5;
+	uint8_t health = 7;
 	OLED_lr_bar_clear();
 	OLED_clear_screen();
 	GAME_draw_status(health, 0);
